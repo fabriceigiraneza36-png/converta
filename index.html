@@ -1,999 +1,1192 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Converta Pro - Advanced Video to Audio Suite</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Real Auth SDKs -->
+    <title>Converta Pro - AI Video to Audio Converter</title>
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        
         :root {
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --primary-light: rgba(59, 130, 246, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.4);
+            /* Core theme variables */
+            --bg-primary: #0f0f23;
+            --bg-secondary: rgba(20, 20, 40, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --bg-glass-hover: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #a78bfa;
+            --accent-glow: 0 0 20px rgba(139, 92, 246, 0.5);
+            --border-primary: rgba(255, 255, 255, 0.1);
+            --shadow-primary: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.3);
+            --radius: 24px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            --waveform-color: #8b5cf6;
+            --waveform-glow: 0 0 15px rgba(139, 92, 246, 0.6);
         }
 
-        .dark {
-            --glass-bg: rgba(15, 23, 42, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.08);
+        /* Light mode overrides */
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: rgba(248, 250, 252, 0.9);
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-glass-hover: rgba(255, 255, 255, 0.95);
+            --text-primary: #1e293b;
+            --text-secondary: rgba(30, 41, 59, 0.8);
+            --border-primary: rgba(30, 41, 59, 0.1);
+            --shadow-primary: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.4);
+            --gradient-primary: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
         }
 
-        /* 9 Total Themes */
-        .theme-blue { --primary: #3b82f6; --primary-hover: #2563eb; }
-        .theme-emerald { --primary: #10b981; --primary-hover: #059669; }
-        .theme-purple { --primary: #8b5cf6; --primary-hover: #7c3aed; }
-        .theme-rose { --primary: #f43f5e; --primary-hover: #e11d48; }
-        .theme-gold { --primary: #f59e0b; --primary-hover: #d97706; }
-        .theme-indigo { --primary: #6366f1; --primary-hover: #4f46e5; }
-        .theme-teal { --primary: #14b8a6; --primary-hover: #0d9488; }
-        .theme-orange { --primary: #f97316; --primary-hover: #ea580c; }
-        .theme-cyber { --primary: #ec4899; --primary-hover: #db2777; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-attachment: fixed;
-            background-image: radial-gradient(circle at 0% 0%, var(--primary-light) 0%, transparent 50%),
-                              radial-gradient(circle at 100% 100%, var(--primary-light) 0%, transparent 50%);
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition);
         }
 
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px var(--primary);
-        }
-        .btn-primary:active { transform: translateY(0); }
-
-        .accent-text { color: var(--primary); }
-        .accent-bg { background-color: var(--primary); }
-        .accent-border { border-color: var(--primary); }
-
-        /* Custom Range Slider Styling */
-        input[type=range] {
-            -webkit-appearance: none;
-            background: transparent;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 10px;
-        }
-        .dark input[type=range]::-webkit-slider-runnable-track { background: #334155; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 18px;
-            width: 18px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            margin-top: -6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border: 2px solid white;
-        }
-
-        .mesh-bg {
+        /* Animated Background Particles */
+        #particles {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.4;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
             pointer-events: none;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+        .particle {
+            position: absolute;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+            box-shadow: var(--accent-glow);
         }
-        .float-anim { animation: float 6s ease-in-out infinite; }
-        
-        #waveform {
-            width: 100%;
-            height: 100px;
-            background: rgba(0,0,0,0.02);
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        .dark #waveform { background: rgba(255,255,255,0.02); }
 
-        .tab-btn.active {
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.1; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Layout */
+        .app-container {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            grid-template-rows: 80px 1fr;
+            grid-template-areas: 
+                "header header"
+                "main sidebar";
+            gap: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                    "header"
+                    "main"
+                    "sidebar";
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-rows: 70px 1fr auto;
+            }
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            backdrop-filter: blur(20px);
+            background: var(--bg-glass);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .theme-toggle, .theme-selector {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .theme-toggle:hover, .theme-selector:hover {
+            background: var(--bg-glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .theme-selector {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .auth-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Main Content */
+        .main {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .upload-zone {
+            border: 3px dashed var(--border-primary);
+            border-radius: var(--radius);
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--gradient-primary);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.1);
+            transform: scale(1.05);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* File Info & Controls */
+        .file-info {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: var(--bg-glass);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-primary);
+            backdrop-filter: blur(20px);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s 0.2s forwards;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .file-metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metadata-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metadata-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .rename-input {
+            background: transparent;
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .rename-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: var(--accent-glow);
+        }
+
+        /* Waveform & Preview */
+        .audio-preview {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        #waveformCanvas {
+            width: 100%;
+            height: 120px;
+            border-radius: var(--radius);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-primary);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Progress Ring */
+        .progress-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .progress-ring {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin: 0 auto 1rem;
+        }
+
+        .progress-circle {
+            transform: rotate(-90deg);
+            transition: stroke-dasharray 0.3s ease;
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: var(--border-primary);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fg {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 0 471;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-primary);
+            padding: 2rem;
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                border-left: none;
+                border-top: 1px solid var(--border-primary);
+            }
+        }
+
+        .history, .settings {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-primary);
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Export Options */
+        .export-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .format-option {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        /* Pro Features */
+        .pro-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .feature-btn {
+            height: 60px;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 0 1rem;
+            }
+            
+            .upload-zone {
+                padding: 2rem 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        /* Overlay Pages */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-content {
+            background: var(--bg-glass);
+            padding: 3rem;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-primary);
+            transform: scale(0.8) translateY(20px);
+            transition: var(--transition);
+        }
+
+        .overlay.active .overlay-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Theme Preview */
+        .theme-preview {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .theme-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .theme-swatch.active {
+            border-color: var(--accent-primary);
+            transform: scale(1.2);
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-primary);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col transition-colors duration-300">
+<body data-theme="dark">
+    <!-- Animated Particles -->
+    <div id="particles"></div>
 
-    <!-- Router Views -->
-    <div id="page-features" class="hidden fixed inset-0 z-[150] bg-white dark:bg-slate-900 overflow-y-auto p-8">
-        <div class="max-w-4xl mx-auto">
-            <button onclick="closePage()" class="mb-8 text-primary font-bold"><i class="fas fa-arrow-left mr-2"></i> Back to Studio</button>
-            <h1 class="text-4xl font-bold mb-6 dark:text-white">Pro Features</h1>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass-card p-6 rounded-2xl">
-                    <i class="fas fa-microchip text-3xl mb-4 accent-text"></i>
-                    <h3 class="text-xl font-bold mb-2 dark:text-white">Offline Rendering</h3>
-                    <p class="text-gray-500">Processing happens 100% on your device. No cloud uploads, maximum privacy.</p>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo" onclick="resetApp()">🎵 Converta Pro</div>
+            <div class="header-actions">
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="theme-selector" onclick="toggleThemeOverlay()">
+                    <span id="currentTheme">Indigo</span> <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="glass-card p-6 rounded-2xl">
-                    <i class="fas fa-sliders text-3xl mb-4 accent-text"></i>
-                    <h3 class="text-xl font-bold mb-2 dark:text-white">3-Band Equalizer</h3>
-                    <p class="text-gray-500">Shape the tone of your audio with professional low, mid, and high frequency controls.</p>
-                </div>
+                <button class="auth-btn" id="authBtn" onclick="toggleAuth()">
+                    <i class="fab fa-google"></i> Sign In
+                </button>
             </div>
-        </div>
-    </div>
+        </header>
 
-    <div id="page-privacy" class="hidden fixed inset-0 z-[150] bg-white dark:bg-slate-900 overflow-y-auto p-8">
-        <div class="max-w-4xl mx-auto">
-            <button onclick="closePage()" class="mb-8 text-primary font-bold"><i class="fas fa-arrow-left mr-2"></i> Back to Studio</button>
-            <h1 class="text-4xl font-bold mb-6 dark:text-white">Privacy Policy</h1>
-            <div class="prose dark:prose-invert">
-                <p class="text-lg text-gray-600 dark:text-gray-400">At Converta Pro, privacy is not a feature—it's our foundation.</p>
-                <div class="mt-8 space-y-4">
-                    <div class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
-                        <p class="font-bold text-emerald-700 dark:text-emerald-400">Zero Server Uploads</p>
-                        <p class="text-sm">Your videos never leave your computer. We use WebAssembly and Web Audio API for local processing.</p>
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h2>Drop your video here or click to browse</h2>
+                <p style="color: var(--text-secondary);">Supports MP4, MOV, AVI, MKV up to 500MB</p>
+                <input type="file" id="fileInput" accept="video/*" style="display: none;">
+            </div>
+
+            <!-- File Info -->
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <div class="file-metadata">
+                    <div class="metadata-item">
+                        <label class="metadata-label">Filename</label>
+                        <div class="metadata-value">
+                            <input type="text" class="rename-input" id="fileNameInput" placeholder="Enter new filename">
+                        </div>
+                    </div>
+                    <div class="metadata-item">
+                        <label class="metadata-label">Duration</label>
+                        <div class="metadata-value" id="duration">--:--</div>
+                    </div>
+                    <div class="metadata-item">
+                        <label class="metadata-label">Size</label>
+                        <div class="metadata-value" id="fileSize">--</div>
+                    </div>
+                    <div class="metadata-item">
+                        <label class="metadata-label">Format</label>
+                        <div class="metadata-value" id="fileFormat">Unknown</div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="glass-card w-full max-w-md rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-300">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold dark:text-white">Join Converta Pro</h3>
-                <button onclick="toggleAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="space-y-4">
-                <button onclick="handleSocialAuth('Google')" class="w-full flex items-center justify-center space-x-3 py-3 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
-                    <i class="fab fa-google text-red-500"></i>
-                    <span class="font-semibold dark:text-white">Continue with Google</span>
-                </button>
-                <button onclick="handleSocialAuth('Facebook')" class="w-full flex items-center justify-center space-x-3 py-3 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
-                    <i class="fab fa-facebook text-blue-600"></i>
-                    <span class="font-semibold dark:text-white">Continue with Facebook</span>
-                </button>
-                <div class="relative py-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200 dark:border-slate-800"></div></div>
-                    <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-slate-900 px-2 text-gray-500">Or email</span></div>
+                <!-- Pro Features -->
+                <div class="pro-features">
+                    <button class="feature-btn btn-secondary" onclick="applyPreset('loud')">
+                        <i class="fas fa-volume-up"></i><br>Loud
+                    </button>
+                    <button class="feature-btn btn-secondary" onclick="applyPreset('clear')">
+                        <i class="fas fa-magic"></i><br>Clear
+                    </button>
+                    <button class="feature-btn btn-secondary" onclick="toggleNormalizer()">
+                        <i class="fas fa-chart-line"></i><br>Normalize
+                    </button>
+                    <button class="feature-btn btn-secondary" onclick="enableBatchMode()">
+                        <i class="fas fa-layer-group"></i><br>Batch
+                    </button>
                 </div>
-                <form onsubmit="handleEmailAuth(event)" class="space-y-4">
-                    <input type="email" required placeholder="Email address" class="w-full bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary">
-                    <input type="password" required placeholder="Password" class="w-full bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary">
-                    <button type="submit" class="w-full btn-primary py-3 rounded-xl font-bold">Start Using History</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <!-- Navbar -->
-    <nav class="sticky top-0 z-50 glass-card border-b border-gray-200 dark:border-slate-800 py-3 px-6">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3 group cursor-pointer" onclick="location.reload()">
-                <div class="accent-bg p-2 rounded-xl rotate-0 group-hover:rotate-12 transition-transform duration-300">
-                    <i class="fas fa-bolt-lightning text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-extrabold tracking-tight dark:text-white">Converta <span class="accent-text italic">Pro</span></span>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <div id="userProfile" class="hidden items-center space-x-3 mr-2 px-3 py-1 bg-primary-light rounded-full border border-primary/20">
-                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" class="w-7 h-7 rounded-full">
-                    <span id="userName" class="text-xs font-bold accent-text">Pro User</span>
-                    <button onclick="handleLogout()" class="text-xs text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-sign-out-alt"></i></button>
-                </div>
-                <button id="loginBtn" onclick="toggleAuthModal()" class="hidden md:block text-sm font-bold accent-text hover:underline px-4">Sign In</button>
-                
-                <div class="hidden lg:flex items-center space-x-1.5 mr-4 bg-gray-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-white/20">
-                    <button onclick="setTheme('theme-blue')" title="Blue" class="w-5 h-5 rounded-full bg-blue-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-emerald')" title="Emerald" class="w-5 h-5 rounded-full bg-emerald-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-purple')" title="Purple" class="w-5 h-5 rounded-full bg-purple-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-rose')" title="Rose" class="w-5 h-5 rounded-full bg-rose-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-gold')" title="Gold" class="w-5 h-5 rounded-full bg-amber-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-indigo')" title="Indigo" class="w-5 h-5 rounded-full bg-indigo-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-teal')" title="Teal" class="w-5 h-5 rounded-full bg-teal-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-orange')" title="Orange" class="w-5 h-5 rounded-full bg-orange-500 hover:scale-125 transition-transform"></button>
-                    <button onclick="setTheme('theme-cyber')" title="Cyber" class="w-5 h-5 rounded-full bg-pink-500 hover:scale-125 transition-transform"></button>
-                </div>
-                <button id="themeToggle" class="p-2.5 rounded-xl bg-gray-100/50 dark:bg-slate-800/50 text-gray-600 dark:text-gray-300 hover:accent-text transition-all">
-                    <i class="fas fa-moon dark:hidden"></i>
-                    <i class="fas fa-sun hidden dark:block"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
-        <div class="grid lg:grid-cols-12 gap-8">
-            
-            <!-- Left Column: Converter Core -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="glass-card rounded-3xl p-8 shadow-2xl border border-white/20">
-                    <div id="dropZone" class="group relative border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl p-12 text-center hover:accent-border hover:bg-primary-light/10 transition-all cursor-pointer">
-                        <input type="file" id="fileInput" class="hidden" accept="video/*">
-                        <div class="mb-4 inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary-light dark:bg-slate-800 text-primary group-hover:scale-110 transition-transform">
-                            <i class="fas fa-cloudupload text-3xl accent-text"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold dark:text-white mb-2">Drop your video here</h2>
-                        <p class="text-gray-500 dark:text-gray-400">High-fidelity local processing. Private & Secure.</p>
-                    </div>
-
-                    <!-- Selected File Info & Controls -->
-                    <div id="fileManager" class="hidden mt-8 space-y-6 animate-in fade-in duration-500">
-                        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
-                            <div class="flex items-center space-x-4">
-                                <div class="accent-bg text-white p-3 rounded-lg"><i class="fas fa-file-video text-xl"></i></div>
-                                <div>
-                                    <h3 id="fileName" class="font-bold text-gray-900 dark:text-white truncate max-w-[200px]">video.mp4</h3>
-                                    <p id="fileSize" class="text-xs text-gray-500 uppercase tracking-widest font-semibold">12.4 MB</p>
-                                </div>
-                            </div>
-                            <button id="resetBtn" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-
-                        <!-- Professional Audio Controls -->
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Volume Boost</label>
-                                <input type="range" id="volumeRange" min="0" max="200" value="100" class="w-full accent-bg h-1.5 rounded-lg appearance-none cursor-pointer">
-                                <div class="flex justify-between text-xs text-gray-500 font-medium"><span>0%</span><span>100% (Default)</span><span>200%</span></div>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Trimming (Start - End sec)</label>
-                                <div class="flex items-center space-x-2">
-                                    <input type="number" id="trimStart" placeholder="Start" class="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-sm focus:ring-2 ring-primary">
-                                    <input type="number" id="trimEnd" placeholder="End" class="w-full bg-gray-100 dark:bg-slate-800 border-none rounded-lg px-3 py-2 text-sm focus:ring-2 ring-primary">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Advanced Settings Accordion -->
-                        <details class="group bg-gray-50/50 dark:bg-slate-800/20 rounded-2xl border border-gray-100 dark:border-slate-800">
-                            <summary class="list-none p-4 flex items-center justify-between cursor-pointer font-bold text-gray-700 dark:text-gray-200">
-                                <span class="flex items-center"><i class="fas fa-microchip mr-3 accent-text"></i> Studio Processing Rack</span>
-                                <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-gray-400"></i>
-                            </summary>
-                            <div class="p-5 pt-2 space-y-6">
-                                <!-- 3-Band Equalizer -->
-                                <div class="grid grid-cols-3 gap-4">
-                                    <div class="space-y-1">
-                                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-tighter">Bass</label>
-                                        <input type="range" id="eqBass" min="-12" max="12" value="0" class="w-full">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-tighter">Mid</label>
-                                        <input type="range" id="eqMid" min="-12" max="12" value="0" class="w-full">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-tighter">Treble</label>
-                                        <input type="range" id="eqTreble" min="-12" max="12" value="0" class="w-full">
-                                    </div>
-                                </div>
-
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-4">
-                                        <div>
-                                            <div class="flex justify-between mb-1">
-                                                <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-tighter">Playback Speed</label>
-                                                <span id="speedVal" class="text-[10px] font-bold accent-text">1.0x</span>
-                                            </div>
-                                            <input type="range" id="procSpeed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full">
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between mb-1">
-                                                <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-tighter">Stereo Panning</label>
-                                                <span class="text-[10px] font-bold text-gray-400">L / R</span>
-                                            </div>
-                                            <input type="range" id="procPan" min="-1" max="1" step="0.1" value="0" class="w-full">
-                                        </div>
-                                    </div>
-
-                                    <div class="space-y-3">
-                                        <div class="grid grid-cols-2 gap-2">
-                                            <div>
-                                                <label class="block text-[10px] font-extrabold text-gray-400 uppercase mb-1">Bit Depth</label>
-                                                <select id="bitDepth" class="w-full bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 rounded-lg text-xs p-2">
-                                                    <option value="16">16-bit Standard</option>
-                                                    <option value="32">32-bit Float (Pro)</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-extrabold text-gray-400 uppercase mb-1">Sample Rate</label>
-                                                <select id="sampleRate" class="w-full bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 rounded-lg text-xs p-2">
-                                                    <option value="44100">44.1 kHz</option>
-                                                    <option value="48000">48.0 kHz</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-wrap gap-3 pt-2">
-                                            <label class="flex items-center space-x-2 cursor-pointer group">
-                                                <input type="checkbox" id="normalize" checked class="w-4 h-4 accent-bg rounded border-gray-300">
-                                                <span class="text-xs text-gray-600 dark:text-gray-400 group-hover:accent-text transition-colors">Normalize Audio</span>
-                                            </label>
-                                            <label class="flex items-center space-x-2 cursor-pointer group">
-                                                <input type="checkbox" id="fadeIn" class="w-4 h-4 accent-bg rounded border-gray-300">
-                                                <span class="text-xs text-gray-600 dark:text-gray-400 group-hover:accent-text transition-colors">Fade In</span>
-                                            </label>
-                                            <label class="flex items-center space-x-2 cursor-pointer group">
-                                                <input type="checkbox" id="fadeOut" class="w-4 h-4 accent-bg rounded border-gray-300">
-                                                <span class="text-xs text-gray-600 dark:text-gray-400 group-hover:accent-text transition-colors">Fade Out</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </details>
-
-                        <button id="convertBtn" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg shadow-xl flex items-center justify-center space-x-3">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            <span>Start Conversion</span>
+                <!-- Audio Preview -->
+                <div class="audio-preview">
+                    <canvas id="waveformCanvas"></canvas>
+                    <div class="controls">
+                        <button class="btn btn-secondary" id="playBtn" onclick="togglePlayback()">
+                            <i class="fas fa-play"></i> Play Preview
+                        </button>
+                        <button class="btn btn-primary" id="convertBtn" onclick="startConversion()" disabled>
+                            <i class="fas fa-download"></i> Convert to Audio
                         </button>
                     </div>
+                </div>
 
-                    <!-- Progress Stepper -->
-                    <div id="progressArea" class="hidden mt-8 space-y-6">
-                        <div class="flex justify-between items-center mb-8">
-                            <div class="flex flex-col items-center step-item" id="step1">
-                                <div class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2"><i class="fas fa-file-import"></i></div>
-                                <span class="text-[10px] uppercase font-bold tracking-tighter">Import</span>
-                            </div>
-                            <div class="flex-grow h-0.5 bg-gray-100 dark:bg-slate-800 mx-2 mb-6"></div>
-                            <div class="flex flex-col items-center step-item" id="step2">
-                                <div class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2"><i class="fas fa-microchip"></i></div>
-                                <span class="text-[10px] uppercase font-bold tracking-tighter">Decode</span>
-                            </div>
-                            <div class="flex-grow h-0.5 bg-gray-100 dark:bg-slate-800 mx-2 mb-6"></div>
-                            <div class="flex flex-col items-center step-item" id="step3">
-                                <div class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2"><i class="fas fa-sliders"></i></div>
-                                <span class="text-[10px] uppercase font-bold tracking-tighter">Effects</span>
-                            </div>
-                            <div class="flex-grow h-0.5 bg-gray-100 dark:bg-slate-800 mx-2 mb-6"></div>
-                            <div class="flex flex-col items-center step-item" id="step4">
-                                <div class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mb-2"><i class="fas fa-file-export"></i></div>
-                                <span class="text-[10px] uppercase font-bold tracking-tighter">Finalize</span>
-                            </div>
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
-                            <div id="progressBar" class="accent-bg h-full w-0 transition-all duration-300"></div>
-                        </div>
-                        <p id="statusLabel" class="text-center text-sm font-medium text-gray-500 animate-pulse">Initializing engine...</p>
-                    </div>
-
-                    <!-- Result Panel -->
-                    <div id="resultArea" class="hidden mt-8 space-y-6 animate-in zoom-in-95 duration-500">
-                        <div class="text-center mb-4">
-                            <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-check-circle text-4xl"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold dark:text-white">Success! Extraction Complete</h3>
-                        </div>
-
-                        <div class="p-6 bg-gray-50 dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700">
-                            <canvas id="waveform" class="mb-4"></canvas>
-                            <audio id="audioPreview" controls class="w-full h-12 mb-4"></audio>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <a id="downloadLink" href="#" class="btn-primary py-3 rounded-xl font-bold flex items-center justify-center space-x-2">
-                                    <i class="fas fa-download"></i>
-                                    <span>Download WAV</span>
-                                </a>
-                                <button onclick="location.reload()" class="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-white py-3 rounded-xl font-bold hover:bg-gray-300 transition-colors">
-                                    <i class="fas fa-redo-alt mr-2"></i> Convert New
-                                </button>
-                            </div>
-                        </div>
+                <!-- Export Options -->
+                <div style="text-align: center; margin-top: 1rem;">
+                    <label>Export as: </label>
+                    <div class="export-options">
+                        <label class="format-option">
+                            <input type="radio" name="format" value="mp3" checked> MP3
+                        </label>
+                        <label class="format-option">
+                            <input type="radio" name="format" value="wav"> WAV
+                        </label>
+                        <label class="format-option">
+                            <input type="radio" name="format" value="aac"> AAC
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Sidebar & History -->
-            <div class="lg:col-span-5 space-y-6">
-                <!-- Metadata Editor -->
-                <div id="metadataPanel" class="hidden glass-card rounded-3xl p-6 shadow-xl border border-white/20">
-                    <h4 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-tag mr-2 accent-text"></i> Audio Tags</h4>
-                    <div class="space-y-3">
-                        <input type="text" id="tagTitle" placeholder="Track Title" class="w-full bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary">
-                        <input type="text" id="tagArtist" placeholder="Artist" class="w-full bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary">
-                        <input type="text" id="tagAlbum" placeholder="Album" class="w-full bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-primary">
-                    </div>
+            <!-- Progress -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-ring">
+                    <svg width="200" height="200">
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="var(--accent-primary)"/>
+                                <stop offset="100%" stop-color="var(--accent-secondary)"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-circle-bg" cx="100" cy="100" r="75"/>
+                        <circle class="progress-circle-fg" cx="100" cy="100" r="75" id="progressCircle"/>
+                    </svg>
+                    <div class="progress-text" id="progressText">0%</div>
                 </div>
+                <p id="progressLabel">Preparing FFmpeg...</p>
+            </div>
+        </main>
 
-                <!-- Session History -->
-                <div class="glass-card rounded-3xl p-6 shadow-xl border border-white/20 flex-grow">
-                    <h4 class="text-lg font-bold mb-4 flex items-center justify-between">
-                        <span><i class="fas fa-history mr-2 accent-text"></i> Recent Sessions</span>
-                        <span id="historyCount" class="text-xs bg-gray-100 dark:bg-slate-800 px-2 py-1 rounded-md text-gray-500">0</span>
-                    </h4>
-                    <div id="historyList" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-                        <p class="text-sm text-gray-400 italic text-center py-8">No history in this session yet.</p>
-                    </div>
-                </div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="history">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i> Conversion History
+                </h3>
+                <div id="historyList">Sign in to save your conversions</div>
+            </div>
 
-                <!-- Hotkeys Hint -->
-                <div class="glass-card rounded-2xl p-4 shadow-sm border border-white/20">
-                    <h5 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Keyboard Shortcuts</h5>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded text-[10px] font-mono dark:text-gray-400">SPACE: Play/Pause</span>
-                        <span class="px-2 py-1 bg-gray-100 dark:bg-slate-800 rounded text-[10px] font-mono dark:text-gray-400">ENTER: Convert</span>
-                    </div>
+            <div class="settings">
+                <h3 class="section-title">
+                    <i class="fas fa-sliders-h"></i> Pro Settings
+                </h3>
+                <div style="display: grid; gap: 1rem;">
+                    <label>
+                        <input type="checkbox" id="normalizeAudio"> Normalize Volume
+                    </label>
+                    <label>
+                        <input type="range" id="volumeSlider" min="0.5" max="2" step="0.1" value="1"> Volume: <span id="volumeValue">1.0x</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" id="removeNoise"> Noise Reduction
+                    </label>
                 </div>
             </div>
+        </aside>
+    </div>
+
+    <!-- Theme Overlay -->
+    <div class="overlay" id="themeOverlay">
+        <div class="overlay-content">
+            <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-palette"></i> Choose Theme</h2>
+            <div id="themePreviews" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;"></div>
+            <button class="btn btn-primary" onclick="toggleThemeOverlay()" style="width: 100%; margin-top: 2rem;">
+                Done
+            </button>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="py-10 px-6 mt-12 border-t border-gray-100 dark:border-slate-800">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-            <div class="flex items-center space-x-2 mb-4 md:mb-0">
-                <span class="font-bold text-gray-900 dark:text-white">Converta Pro 2.0</span>
-                <span>&bull; Built with Privacy-First local processing</span>
-            </div>
-            <div class="flex space-x-6">
-                <button onclick="showPage('features')" class="hover:accent-text transition-colors cursor-pointer">Features</button>
-                <button onclick="showPage('privacy')" class="hover:accent-text transition-colors cursor-pointer">Privacy</button>
-                <a href="https://github.com" target="_blank" class="hover:accent-text transition-colors">GitHub</a>
-            </div>
+    <!-- Auth Overlay -->
+    <div class="overlay" id="authOverlay">
+        <div class="overlay-content">
+            <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-sign-in-alt"></i> Sign In</h2>
+            <div id="g_id_onload"></div>
+            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">Or use email/password</p>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="emailLogin()">Email Login</button>
         </div>
-    </footer>
+    </div>
 
     <script>
-        // Core state
-        let selectedFile = null;
+        // Global State
+        let currentFile = null;
+        let audioContext = null;
         let audioBuffer = null;
-        let currentTheme = 'theme-blue';
-        let conversionHistory = JSON.parse(localStorage.getItem('converta_history')) || [];
-        let currentUser = JSON.parse(localStorage.getItem('converta_user')) || null;
+        let isPlaying = false;
+        let ffmpeg = null;
+        let user = null;
+        let currentTheme = 'indigo';
+        let isDark = true;
+        let history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
 
-        // DOM Elements
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const fileManager = document.getElementById('fileManager');
-        const fileNameDisplay = document.getElementById('fileName');
-        const fileSizeDisplay = document.getElementById('fileSize');
-        const convertBtn = document.getElementById('convertBtn');
-        const progressArea = document.getElementById('progressArea');
-        const progressBar = document.getElementById('progressBar');
-        const statusLabel = document.getElementById('statusLabel');
-        const resultArea = document.getElementById('resultArea');
-        const audioPreview = document.getElementById('audioPreview');
-        const downloadLink = document.getElementById('downloadLink');
-        const themeToggle = document.getElementById('themeToggle');
-        const metadataPanel = document.getElementById('metadataPanel');
-
-        // Auth Functions
-        function toggleAuthModal() {
-            document.getElementById('authModal').classList.toggle('hidden');
-        }
-
-        function updateAuthUI() {
-            const loginBtn = document.getElementById('loginBtn');
-            const userProfile = document.getElementById('userProfile');
-            if (currentUser) {
-                loginBtn.classList.add('hidden');
-                userProfile.classList.remove('hidden');
-                userProfile.classList.add('flex');
-                document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
-                document.getElementById('userAvatar').src = currentUser.picture || `https://ui-avatars.com/api/?name=${currentUser.name}&background=random`;
-            } else {
-                loginBtn.classList.remove('hidden');
-                userProfile.classList.add('hidden');
-            }
-            renderHistory();
-        }
-
-        /**
-         * PROFESSIONAL AUTHENTICATION INTEGRATION
-         * Place your API Credentials here:
-         */
-        const AUTH_CONFIG = {
-            googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
-            facebookAppId: 'YOUR_FACEBOOK_APP_ID'
+        // Theme System (12 Professional Themes)
+        const themes = {
+            indigo: { '--accent-primary': '#8b5cf6', '--accent-secondary': '#a78bfa', '--waveform-color': '#8b5cf6' },
+            emerald: { '--accent-primary': '#10b981', '--accent-secondary': '#34d399', '--waveform-color': '#10b981' },
+            rose: { '--accent-primary': '#ec4899', '--accent-secondary': '#f472b6', '--waveform-color': '#ec4899' },
+            amber: { '--accent-primary': '#f59e0b', '--accent-secondary': '#fbbf24', '--waveform-color': '#f59e0b' },
+            cyan: { '--accent-primary': '#06b6d4', '--accent-secondary': '#22d3ee', '--waveform-color': '#06b6d4' },
+            lime: { '--accent-primary': '#84cc16', '--accent-secondary': '#a3e635', '--waveform-color': '#84cc16' },
+            violet: { '--accent-primary': '#a855f7', '--accent-secondary': '#c084fc', '--waveform-color': '#a855f7' },
+            sky: { '--accent-primary': '#0ea5e9', '--accent-secondary': '#38bdf8', '--waveform-color': '#0ea5e9' },
+            orange: { '--accent-primary': '#f97316', '--accent-secondary': '#fb923c', '--waveform-color': '#f97316' },
+            pink: { '--accent-primary': '#ec4899', '--accent-secondary': '#f472b6', '--waveform-color': '#ec4899' },
+            teal: { '--accent-primary': '#14b8a6', '--accent-secondary': '#2dd4bf', '--waveform-color': '#14b8a6' },
+            fuchsia: { '--accent-primary': '#d946ef', '--accent-secondary': '#f0abfc', '--waveform-color': '#d946ef' }
         };
 
-        // Initialize Google SDK
-        function initGoogleAuth() {
-            if (typeof google === 'undefined') return;
-            google.accounts.id.initialize({
-                client_id: AUTH_CONFIG.googleClientId,
-                callback: handleGoogleResponse
+        // Initialize App
+        async function init() {
+            createParticles();
+            initFFmpeg();
+            updateHistory();
+            initGoogleAuth();
+            updateTheme();
+            document.getElementById('volumeSlider').addEventListener('input', function(e) {
+                document.getElementById('volumeValue').textContent = e.target.value + 'x';
             });
         }
 
-        // Initialize Facebook SDK
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : AUTH_CONFIG.facebookAppId,
-                cookie     : true,
-                xfbml      : true,
-                version    : 'v18.0'
-            });
-        };
-
-        // Real Google Login Trigger
-        function loginWithGoogle() {
-            google.accounts.id.prompt(); // Displays the One Tap dialog or Sign In popup
-        }
-
-        function handleGoogleResponse(response) {
-            // Decode JWT Token (Standard Google Auth Flow)
-            const base64Url = response.credential.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-
-            const userData = JSON.parse(jsonPayload);
-            loginSuccessHandler({
-                name: userData.name,
-                email: userData.email,
-                picture: userData.picture,
-                provider: 'Google'
-            });
-        }
-
-        // Real Facebook Login Trigger
-        function loginWithFacebook() {
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    FB.api('/me', {fields: 'name,email,picture'}, function(userData) {
-                        loginSuccessHandler({
-                            name: userData.name,
-                            email: userData.email,
-                            picture: userData.picture.data.url,
-                            provider: 'Facebook'
-                        });
-                    });
-                }
-            }, {scope: 'public_profile,email'});
-        }
-
-        function loginSuccessHandler(user) {
-            currentUser = user;
-            localStorage.setItem('converta_user', JSON.stringify(currentUser));
-            toggleAuthModal();
-            updateAuthUI();
-            
-            // Notify user
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl z-[200] animate-bounce';
-            toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Welcome back, ${user.name}!`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Keep the old handler but route to real functions
-        function handleSocialAuth(provider) {
-            if (provider === 'Google') loginWithGoogle();
-            if (provider === 'Facebook') loginWithFacebook();
-        }
-
-        window.addEventListener('message', (event) => {
-            if (event.data.type === 'AUTH_SUCCESS') {
-                currentUser = event.data.user;
-                localStorage.setItem('converta_user', JSON.stringify(currentUser));
-                toggleAuthModal();
-                updateAuthUI();
+        // Particles Animation
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 20 + 20) + 's';
+                particles.appendChild(particle);
             }
-        });
-
-        function showPage(pageId) {
-            document.getElementById('page-' + pageId).classList.remove('hidden');
         }
 
-        function closePage() {
-            document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+        // FFmpeg Initialization
+        async function initFFmpeg() {
+            const { FFmpeg } = FFmpegWASM;
+            ffmpeg = new FFmpeg();
+            await ffmpeg.load({
+                coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+                wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
+            });
         }
 
-        function handleEmailAuth(e) {
+        // File Handling
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+        document.getElementById('uploadZone').addEventListener('dragover', handleDragOver);
+        document.getElementById('uploadZone').addEventListener('dragleave', handleDragLeave);
+        document.getElementById('uploadZone').addEventListener('drop', handleDrop);
+
+        function handleDragOver(e) {
             e.preventDefault();
-            const email = e.target.querySelector('input[type="email"]').value;
-            currentUser = { name: email.split('@')[0], email: email };
-            localStorage.setItem('converta_user', JSON.stringify(currentUser));
-            toggleAuthModal();
-            updateAuthUI();
+            document.getElementById('uploadZone').classList.add('dragover');
         }
 
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('converta_user');
-            updateAuthUI();
-        }
-
-        // Initial Setup
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        }
-        updateAuthUI();
-        window.onload = initGoogleAuth;
-
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-        });
-
-        function setTheme(theme) {
-            const themes = ['theme-blue', 'theme-emerald', 'theme-purple', 'theme-rose', 'theme-gold', 'theme-indigo', 'theme-teal', 'theme-orange', 'theme-cyber'];
-            document.body.classList.remove(...themes);
-            document.body.classList.add(theme);
-            currentTheme = theme;
-            
-            // Re-draw waveform if it exists to match new theme
-            if (audioBuffer) drawWaveform(audioBuffer);
-        }
-
-        // File Selection
-        dropZone.addEventListener('click', () => fileInput.click());
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('accent-border'); });
-        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('accent-border'); });
-        dropZone.addEventListener('drop', (e) => {
+        function handleDragLeave(e) {
             e.preventDefault();
-            dropZone.classList.remove('accent-border');
-            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-        });
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length) handleFile(e.target.files[0]);
-        });
-
-        function handleFile(file) {
-            if (!file.type.startsWith('video/')) {
-                alert('Please upload a valid video file.');
-                return;
-            }
-            selectedFile = file;
-            fileNameDisplay.textContent = file.name;
-            fileSizeDisplay.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-            
-            dropZone.classList.add('hidden');
-            fileManager.classList.remove('hidden');
-            metadataPanel.classList.remove('hidden');
-            
-            // Auto-fill tags from filename
-            const cleanName = file.name.split('.').slice(0, -1).join('.');
-            document.getElementById('tagTitle').value = cleanName;
+            document.getElementById('uploadZone').classList.remove('dragover');
         }
 
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            location.reload();
-        });
-
-        // Update value displays
-        document.getElementById('procSpeed').addEventListener('input', (e) => {
-            document.getElementById('speedVal').textContent = parseFloat(e.target.value).toFixed(1) + 'x';
-        });
-
-        // Helper to update progress steps visually
-        function updateStep(stepNumber, text) {
-            // Reset all steps
-            document.querySelectorAll('.step-item').forEach(el => {
-                el.querySelector('div').classList.remove('accent-bg', 'text-white', 'border-primary');
-                el.querySelector('div').classList.add('border-gray-200', 'dark:border-slate-700');
-            });
-
-            // Highlight current and previous steps
-            for (let i = 1; i <= stepNumber; i++) {
-                const step = document.getElementById(`step${i}`);
-                if (step) {
-                    const iconBox = step.querySelector('div');
-                    iconBox.classList.remove('border-gray-200', 'dark:border-slate-700');
-                    iconBox.classList.add('accent-bg', 'text-white', 'border-primary');
-                }
-            }
-            statusLabel.textContent = text;
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
         }
 
-        function updateProgress(percent) {
-            progressBar.style.width = percent + '%';
+        async function handleFile(e) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
         }
 
-        // Conversion Engine (Advanced Offline Pipeline)
-        convertBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
-
-            fileManager.classList.add('hidden');
-            progressArea.classList.remove('hidden');
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            currentFile = files[0];
             
-            try {
-                updateStep(1, "Preparing studio environment...");
-                const arrayBuffer = await selectedFile.arrayBuffer();
-                updateProgress(20);
+            const fileInfo = document.getElementById('fileInfo');
+            document.getElementById('fileNameInput').value = currentFile.name.replace(/\.[^/.]+$/, '');
+            await loadFileMetadata(currentFile);
+            fileInfo.style.display = 'block';
+            await createAudioPreview(currentFile);
+            document.getElementById('convertBtn').disabled = false;
+        }
 
-                updateStep(2, "Decoding ultra-high quality stream...");
-                const baseCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const sourceBuffer = await baseCtx.decodeAudioData(arrayBuffer);
-                updateProgress(40);
-
-                updateStep(3, "Mastering audio with Pro-FX...");
-                
-                // Studio Parameters
-                const sampleRate = parseInt(document.getElementById('sampleRate').value);
-                const channels = sourceBuffer.numberOfChannels;
-                const speed = parseFloat(document.getElementById('procSpeed').value);
-                const panVal = parseFloat(document.getElementById('procPan').value);
-                const volume = parseFloat(document.getElementById('volumeRange').value) / 100;
-                
-                // Trimming Calculations
-                const tStart = parseFloat(document.getElementById('trimStart').value) || 0;
-                const tEnd = parseFloat(document.getElementById('trimEnd').value) || sourceBuffer.duration;
-                const duration = (tEnd - tStart) / speed;
-                
-                // Setup Offline Context for faster-than-light processing
-                const offlineCtx = new OfflineAudioContext(channels, sourceBuffer.sampleRate * duration, sourceBuffer.sampleRate);
-                
-                const source = offlineCtx.createBufferSource();
-                source.buffer = sourceBuffer;
-                source.playbackRate.value = speed;
-
-                // EQ Chain
-                const bass = offlineCtx.createBiquadFilter();
-                bass.type = 'lowshelf';
-                bass.frequency.value = 200;
-                bass.gain.value = parseFloat(document.getElementById('eqBass').value);
-
-                const mid = offlineCtx.createBiquadFilter();
-                mid.type = 'peaking';
-                mid.frequency.value = 1000;
-                mid.gain.value = parseFloat(document.getElementById('eqMid').value);
-
-                const treble = offlineCtx.createBiquadFilter();
-                treble.type = 'highshelf';
-                treble.frequency.value = 3000;
-                treble.gain.value = parseFloat(document.getElementById('eqTreble').value);
-
-                // Panner & Gain
-                const panner = offlineCtx.createStereoPanner();
-                panner.pan.value = panVal;
-
-                const gainNode = offlineCtx.createGain();
-                gainNode.gain.value = volume;
-
-                // Connection Chain
-                source.connect(bass);
-                bass.connect(mid);
-                mid.connect(treble);
-                treble.connect(panner);
-                panner.connect(gainNode);
-                gainNode.connect(offlineCtx.destination);
-
-                source.start(0, tStart);
-                const renderedBuffer = await offlineCtx.startRendering();
-                updateProgress(70);
-
-                // Software Post-Processing (Fades & Normalization)
-                if (document.getElementById('normalize').checked) normalizeBuffer(renderedBuffer);
-                if (document.getElementById('fadeIn').checked) applyFade(renderedBuffer, 'in');
-                if (document.getElementById('fadeOut').checked) applyFade(renderedBuffer, 'out');
-
-                updateStep(4, "Exporting lossless audio package...");
-                const bitDepth = parseInt(document.getElementById('bitDepth').value);
-                const wavBlob = audioBufferToWav(renderedBuffer, bitDepth);
-                const url = URL.createObjectURL(wavBlob);
-                
-                // UI Results
-                const finalTitle = document.getElementById('tagTitle').value || 'Converta_Pro_Export';
-                
-                // Force Download fix
-                downloadLink.onclick = (e) => {
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${finalTitle}.wav`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
+        async function loadFileMetadata(file) {
+            const audio = new Audio(URL.createObjectURL(file));
+            return new Promise((resolve) => {
+                audio.onloadedmetadata = () => {
+                    document.getElementById('duration').textContent = formatTime(audio.duration);
+                    document.getElementById('fileSize').textContent = formatBytes(file.size);
+                    document.getElementById('fileFormat').textContent = file.name.split('.').pop().toUpperCase();
+                    resolve();
                 };
-
-                audioPreview.src = url;
-                
-                drawWaveform(renderedBuffer);
-                addToHistory(finalTitle, (wavBlob.size / 1024).toFixed(1) + ' KB', url);
-
-                updateProgress(100);
-                setTimeout(() => {
-                    progressArea.classList.add('hidden');
-                    resultArea.classList.remove('hidden');
-                }, 600);
-
-            } catch (err) {
-                console.error(err);
-                alert("Mastering error: " + err.message);
-                location.reload();
-            }
-        });
-
-        // Advanced Logic Helpers
-        function normalizeBuffer(buffer) {
-            let maxAmp = 0;
-            for (let c = 0; c < buffer.numberOfChannels; c++) {
-                const data = buffer.getChannelData(c);
-                for (let i = 0; i < data.length; i++) {
-                    const abs = Math.abs(data[i]);
-                    if (abs > maxAmp) maxAmp = abs;
-                }
-            }
-            if (maxAmp > 0) {
-                const scale = 0.98 / maxAmp;
-                for (let c = 0; c < buffer.numberOfChannels; c++) {
-                    const data = buffer.getChannelData(c);
-                    for (let i = 0; i < data.length; i++) data[i] *= scale;
-                }
-            }
+            });
         }
 
-        function applyFade(buffer, type) {
-            const fadeLength = buffer.sampleRate * 2;
-            for (let c = 0; c < buffer.numberOfChannels; c++) {
-                const data = buffer.getChannelData(c);
-                if (type === 'in') {
-                    for (let i = 0; i < Math.min(fadeLength, data.length); i++) data[i] *= (i / fadeLength);
-                } else {
-                    const start = Math.max(0, data.length - fadeLength);
-                    for (let i = start; i < data.length; i++) data[i] *= (1 - (i - start) / fadeLength);
-                }
-            }
+        // Audio Preview & Waveform
+        async function createAudioPreview(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            renderWaveform();
         }
 
-        function drawWaveform(buffer) {
-            const canvas = document.getElementById('waveform');
+        function renderWaveform() {
+            const canvas = document.getElementById('waveformCanvas');
             const ctx = canvas.getContext('2d');
             const width = canvas.width = canvas.offsetWidth;
             const height = canvas.height = canvas.offsetHeight;
-            const data = buffer.getChannelData(0);
-            const step = Math.ceil(data.length / width);
-            const amp = height / 2;
             
-            ctx.clearRect(0, 0, width, height);
+            const barWidth = width / audioBuffer.length;
+            const barCount = Math.floor(width / 4);
             
-            const gradient = ctx.createLinearGradient(0, 0, 0, height);
-            const primary = getComputedStyle(document.body).getPropertyValue('--primary');
-            gradient.addColorStop(0, primary);
-            gradient.addColorStop(0.5, primary + 'CC');
-            gradient.addColorStop(1, primary);
+            ctx.fillStyle = 'var(--bg-secondary)';
+            ctx.fillRect(0, 0, width, height);
             
-            ctx.fillStyle = gradient;
+            for (let i = 0; i < barCount; i++) {
+                const barHeight = (Math.abs(audioBuffer.getChannelData(0)[Math.floor((i / barCount) * audioBuffer.length)])) * height * 1.5;
+                const x = i * 4;
+                ctx.fillStyle = `hsl(${240 + barHeight / height * 60}, 70%, 50%)`;
+                ctx.shadowColor = 'var(--waveform-color)';
+                ctx.shadowBlur = 10;
+                ctx.fillRect(x, height/2 - barHeight/2, 2, barHeight);
+            }
+        }
+
+        function togglePlayback() {
+            if (!audioContext || !audioBuffer) return;
             
-            for (let i = 0; i < width; i++) {
-                let min = 1.0;
-                let max = -1.0;
-                for (let j = 0; j < step; j++) {
-                    const datum = data[(i * step) + j];
-                    if (datum < min) min = datum;
-                    if (datum > max) max = datum;
-                }
-                const barHeight = Math.max(2, (max - min) * amp);
-                const y = (1 + min) * amp;
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+            source.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (isPlaying) {
+                audioContext.suspend();
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Play Preview';
+            } else {
+                audioContext.resume();
+                source.start(0);
+                document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i> Playing...';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // FFmpeg Conversion
+        async function startConversion() {
+            const format = document.querySelector('input[name="format"]:checked').value;
+            const outputName = document.getElementById('fileNameInput').value || 'output';
+            const progressContainer = document.getElementById('progressContainer');
+            const progressLabel = document.getElementById('progressLabel');
+            
+            progressContainer.style.display = 'block';
+            document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+            
+            try {
+                progressLabel.textContent = 'Loading file...';
+                await ffmpeg.writeFile('input.' + currentFile.name.split('.').pop(), new Uint8Array(await currentFile.arrayBuffer()));
                 
-                // Rounded bar effect
-                ctx.beginPath();
-                ctx.roundRect(i, y, 1, barHeight, 2);
-                ctx.fill();
+                let command = ['-i', 'input.' + currentFile.name.split('.').pop()];
+                
+                // Pro features
+                if (document.getElementById('normalizeAudio').checked) {
+                    command.push('-af', 'loudnorm');
+                }
+                if (document.getElementById('removeNoise').checked) {
+                    command.push('-af', 'afftdn');
+                }
+                
+                // Volume adjustment
+                const volume = document.getElementById('volumeSlider').value;
+                if (volume !== '1') {
+                    command.push('-af', `volume=${volume}`);
+                }
+                
+                // Format-specific
+                if (format === 'mp3') {
+                    command.push('-c:a', 'libmp3lame', '-b:a', '320k');
+                } else if (format === 'wav') {
+                    command.push('-c:a', 'pcm_s16le');
+                } else if (format === 'aac') {
+                    command.push('-c:a', 'aac');
+                }
+                
+                command.push(outputName + '.' + format);
+                
+                progressLabel.textContent = 'Converting...';
+                await ffmpeg.exec(...command);
+                
+                const data = await ffmpeg.readFile(outputName + '.' + format);
+                const blob = new Blob([data.buffer], { type: 'audio/' + format });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = outputName + '.' + format;
+                a.click();
+                
+                // Save to history
+                saveToHistory(outputName + '.' + format, currentFile.size, format);
+                
+                progressLabel.textContent = 'Complete!';
+            } catch (error) {
+                console.error('Conversion failed:', error);
+                progressLabel.textContent = 'Conversion failed';
+            } finally {
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+                }, 2000);
             }
         }
 
-        function addToHistory(name, size, url) {
-            const historyItem = { name, size, url, date: new Date().toISOString() };
-            conversionHistory.unshift(historyItem);
-            if (conversionHistory.length > 10) conversionHistory.pop();
-            
-            if (currentUser) {
-                localStorage.setItem(`converta_history_${currentUser.email}`, JSON.stringify(conversionHistory));
-            } else {
-                localStorage.setItem('converta_history', JSON.stringify(conversionHistory));
-            }
-            renderHistory();
+        // Progress Ring Animation
+        function updateProgress(percent) {
+            const circle = document.getElementById('progressCircle');
+            const text = document.getElementById('progressText');
+            const circumference = 471;
+            circle.style.strokeDasharray = `${percent * circumference} ${circumference}`;
+            text.textContent = Math.round(percent * 100) + '%';
         }
 
-        function renderHistory() {
-            const list = document.getElementById('historyList');
-            const count = document.getElementById('historyCount');
-            
-            let data = [];
-            if (currentUser) {
-                data = JSON.parse(localStorage.getItem(`converta_history_${currentUser.email}`)) || [];
-            } else {
-                data = JSON.parse(localStorage.getItem('converta_history')) || [];
+        // Theme Management
+        function toggleTheme() {
+            isDark = !isDark;
+            document.body.dataset.theme = isDark ? 'dark' : 'light';
+            document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function changeTheme(themeName) {
+            currentTheme = themeName;
+            document.getElementById('currentTheme').textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+            Object.entries(themes[themeName]).forEach(([key, value]) => {
+                document.documentElement.style.setProperty(key, value);
+            });
+            localStorage.setItem('currentTheme', themeName);
+            toggleThemeOverlay();
+        }
+
+        function updateTheme() {
+            const savedTheme = localStorage.getItem('currentTheme') || 'indigo';
+            const savedMode = localStorage.getItem('theme') || 'dark';
+            currentTheme = savedTheme;
+            isDark = savedMode === 'dark';
+            document.body.dataset.theme = isDark ? 'dark' : 'light';
+            changeTheme(savedTheme);
+        }
+
+        function toggleThemeOverlay() {
+            const overlay = document.getElementById('themeOverlay');
+            overlay.classList.toggle('active');
+            if (overlay.classList.contains('active')) {
+                renderThemePreviews();
             }
-            conversionHistory = data;
-            
-            count.textContent = data.length;
-            
-            if (data.length === 0) {
-                list.innerHTML = `<p class="text-sm text-gray-400 italic text-center py-8">No history in this session yet.</p>`;
+        }
+
+        function renderThemePreviews() {
+            const container = document.getElementById('themePreviews');
+            container.innerHTML = '';
+            Object.entries(themes).forEach(([name, colors]) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'theme-swatch';
+                swatch.title = name;
+                swatch.style.background = `linear-gradient(135deg, ${colors['--accent-primary']}, ${colors['--accent-secondary']})`;
+                if (name === currentTheme) swatch.classList.add('active');
+                swatch.onclick = () => changeTheme(name);
+                container.appendChild(swatch);
+            });
+        }
+
+        // Pro Features
+        function applyPreset(preset) {
+            if (preset === 'loud') {
+                document.getElementById('normalizeAudio').checked = true;
+                document.getElementById('volumeSlider').value = '1.5';
+                document.getElementById('volumeValue').textContent = '1.5x';
+            } else if (preset === 'clear') {
+                document.getElementById('removeNoise').checked = true;
+                document.getElementById('normalizeAudio').checked = true;
+            }
+        }
+
+        function toggleNormalizer() {
+            const checkbox = document.getElementById('normalizeAudio');
+            checkbox.checked = !checkbox.checked;
+        }
+
+        function enableBatchMode() {
+            alert('Batch mode coming soon in Pro version!');
+        }
+
+        // History Management
+        function saveToHistory(filename, size, format) {
+            const entry = {
+                id: Date.now(),
+                filename,
+                size: formatBytes(size),
+                format,
+                date: new Date().toLocaleString(),
+                duration: document.getElementById('duration').textContent
+            };
+            history.unshift(entry);
+            history = history.slice(0, 50);
+            localStorage.setItem('conversionHistory', JSON.stringify(history));
+            updateHistory();
+        }
+
+        function updateHistory() {
+            const container = document.getElementById('historyList');
+            if (history.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-secondary);">No conversions yet</div>';
                 return;
             }
-
-            list.innerHTML = data.map(item => `
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800/50 rounded-xl animate-in slide-in-from-right duration-300">
-                    <div class="overflow-hidden">
-                        <p class="text-xs font-bold truncate dark:text-white">${item.name}</p>
-                        <p class="text-[10px] text-gray-500 uppercase">${item.size} &bull; WAV</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <a href="${item.url}" download="${item.name}.wav" class="text-primary hover:scale-110 transition-transform"><i class="fas fa-download"></i></a>
+            container.innerHTML = history.map(entry => `
+                <div class="history-item">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${entry.filename}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+                        <span>${entry.format.toUpperCase()}</span>
+                        <span>${entry.date}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Keyboard support
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && !resultArea.classList.contains('hidden')) {
-                e.preventDefault();
-                audioPreview.paused ? audioPreview.play() : audioPreview.pause();
+        // Auth Integration
+        function initGoogleAuth() {
+            window.google.accounts.id.initialize({
+                client_id: '690118782407-mdbscci2sh3h3v7k0luse4a0oe1ja032.apps.googleusercontent.com', // Replaced with my real client ID
+                callback: handleGoogleSignIn
+            });
+            window.google.accounts.id.renderButton(
+                document.getElementById('authBtn'),
+                { theme: 'outline', size: 'large', type: 'standard' }
+            );
+        }
+
+        function handleGoogleSignIn(response) {
+            user = JSON.parse(atob(response.credential.split('.')[1]));
+            document.getElementById('authBtn').textContent = `Hi, ${user.name}`;
+            updateHistory();
+        }
+
+        function toggleAuth() {
+            document.getElementById('authOverlay').classList.toggle('active');
+        }
+
+        function emailLogin() {
+            const email = prompt('Enter email:');
+            if (email) {
+                user = { email };
+                document.getElementById('authBtn').innerHTML = `${user.email}<i class="fas fa-sign-out-alt" onclick="signOut()"></i>`;
             }
-            if (e.code === 'Enter' && !fileManager.classList.contains('hidden')) {
-                convertBtn.click();
+        }
+
+        function signOut() {
+            user = null;
+            document.getElementById('authBtn').textContent = 'Sign In';
+        }
+
+        // Utility Functions
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function resetApp() {
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('convertBtn').disabled = true;
+            currentFile = null;
+            if (audioContext) audioContext.close();
+        }
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlayback();
+            } else if (e.code === 'Enter' && !document.getElementById('convertBtn').disabled) {
+                startConversion();
             }
         });
 
-        // Multi-Bit-Depth WAV Exporter
-        function audioBufferToWav(buffer, bitDepth = 16) {
-            const numOfChan = buffer.numberOfChannels;
-            const bytesPerSample = bitDepth === 32 ? 4 : 2;
-            const format = bitDepth === 32 ? 3 : 1; // 3 for FLOAT, 1 for PCM
-            const length = buffer.length * numOfChan * bytesPerSample + 44;
-            const bufferData = new ArrayBuffer(length);
-            const view = new DataView(bufferData);
-            const channels = [];
-            let pos = 0;
-            let offset = 0;
-
-            const setUint16 = (data) => { view.setUint16(pos, data, true); pos += 2; };
-            const setUint32 = (data) => { view.setUint32(pos, data, true); pos += 4; };
-
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8);
-            setUint32(0x45564157); // "WAVE"
-            setUint32(0x20746d66); // "fmt "
-            setUint32(16);
-            setUint16(format);
-            setUint16(numOfChan);
-            setUint32(buffer.sampleRate);
-            setUint32(buffer.sampleRate * bytesPerSample * numOfChan);
-            setUint16(numOfChan * bytesPerSample);
-            setUint16(bitDepth);
-            setUint32(0x61746164); // "data"
-            setUint32(length - pos - 4);
-
-            for (let i = 0; i < numOfChan; i++) channels.push(buffer.getChannelData(i));
-
-            while (pos < length) {
-                for (let i = 0; i < numOfChan; i++) {
-                    let sample = Math.max(-1, Math.min(1, channels[i][offset]));
-                    if (bitDepth === 32) {
-                        view.setFloat32(pos, sample, true);
-                    } else {
-                        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
-                        view.setInt16(pos, sample, true);
-                    }
-                    pos += bytesPerSample;
-                }
-                offset++;
-            }
-            return new Blob([bufferData], { type: "audio/wav" });
-        }
+        // Initialize on load
+        window.addEventListener('load', init);
     </script>
 </body>
-
 </html>
