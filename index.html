@@ -3,44 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Converta Pro - AI Video to Audio Converter</title>
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Converta Pro - Video to Audio Converter</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Core theme variables */
-            --bg-primary: #0f0f23;
-            --bg-secondary: rgba(20, 20, 40, 0.8);
-            --bg-glass: rgba(255, 255, 255, 0.05);
-            --bg-glass-hover: rgba(255, 255, 255, 0.1);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+            --bg-primary: #06060f;
+            --bg-secondary: rgba(12, 12, 30, 0.9);
+            --bg-tertiary: rgba(18, 18, 45, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.07);
+            --bg-card: rgba(15, 15, 35, 0.8);
+            --text-primary: #f0f0ff;
+            --text-secondary: rgba(220, 220, 255, 0.6);
+            --text-tertiary: rgba(200, 200, 255, 0.4);
             --accent-primary: #8b5cf6;
             --accent-secondary: #a78bfa;
-            --accent-glow: 0 0 20px rgba(139, 92, 246, 0.5);
-            --border-primary: rgba(255, 255, 255, 0.1);
-            --shadow-primary: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.3);
-            --radius: 24px;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            --gradient-primary: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-            --waveform-color: #8b5cf6;
-            --waveform-glow: 0 0 15px rgba(139, 92, 246, 0.6);
+            --accent-tertiary: #c4b5fd;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --accent-glow-strong: rgba(139, 92, 246, 0.6);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --border-primary: rgba(139, 92, 246, 0.12);
+            --border-secondary: rgba(255, 255, 255, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.15);
+            --shadow-glow-strong: 0 0 60px rgba(139, 92, 246, 0.25);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Light mode overrides */
         [data-theme="light"] {
-            --bg-primary: #f8fafc;
-            --bg-secondary: rgba(248, 250, 252, 0.9);
-            --bg-glass: rgba(255, 255, 255, 0.85);
-            --bg-glass-hover: rgba(255, 255, 255, 0.95);
-            --text-primary: #1e293b;
-            --text-secondary: rgba(30, 41, 59, 0.8);
-            --border-primary: rgba(30, 41, 59, 0.1);
-            --shadow-primary: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.4);
-            --gradient-primary: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+            --bg-primary: #f5f3ff;
+            --bg-secondary: rgba(245, 243, 255, 0.95);
+            --bg-tertiary: rgba(237, 233, 254, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-glass-hover: rgba(255, 255, 255, 0.9);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1e1b4b;
+            --text-secondary: rgba(30, 27, 75, 0.6);
+            --text-tertiary: rgba(30, 27, 75, 0.4);
+            --border-primary: rgba(139, 92, 246, 0.15);
+            --border-secondary: rgba(30, 27, 75, 0.08);
+            --shadow-sm: 0 2px 8px rgba(139, 92, 246, 0.08);
+            --shadow-md: 0 8px 32px rgba(139, 92, 246, 0.1);
+            --shadow-lg: 0 20px 60px rgba(139, 92, 246, 0.12);
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.08);
+            --shadow-glow-strong: 0 0 60px rgba(139, 92, 246, 0.15);
         }
 
         * {
@@ -49,16 +69,100 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            transition: var(--transition);
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* Animated Background Particles */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: var(--transition);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Background Effects */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            animation: orbFloat 25s ease-in-out infinite;
+        }
+
+        .bg-gradient-orb:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            background: var(--accent-primary);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-gradient-orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: #3b82f6;
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -8s;
+        }
+
+        .bg-gradient-orb:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+            top: 50%;
+            left: 50%;
+            animation-delay: -16s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-20px, 40px) scale(0.95); }
+            75% { transform: translate(30px, 20px) scale(1.05); }
+        }
+
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--border-secondary) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-secondary) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+        }
+
+        .bg-noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Particles */
         #particles {
             position: fixed;
             top: 0;
@@ -73,32 +177,1569 @@
             position: absolute;
             background: var(--accent-primary);
             border-radius: 50%;
-            opacity: 0.1;
-            animation: float 20s infinite linear;
-            box-shadow: var(--accent-glow);
+            opacity: 0;
+            animation: particleFloat linear infinite;
         }
 
-        @keyframes float {
+        @keyframes particleFloat {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.1; }
-            90% { opacity: 0.1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+            5% { opacity: 0.15; }
+            95% { opacity: 0.15; }
+            100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
         }
 
-        /* Main Layout */
+        /* App Layout */
         .app-container {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 380px;
-            grid-template-rows: 80px 1fr;
+            grid-template-columns: 1fr 360px;
+            grid-template-rows: auto 1fr;
             grid-template-areas: 
                 "header header"
                 "main sidebar";
-            gap: 0;
             position: relative;
             z-index: 1;
         }
 
+        /* Header */
+        .header {
+            grid-area: header;
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            background: var(--bg-glass);
+            border-bottom: 1px solid var(--border-secondary);
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logo-group:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+            animation: logoShine 3s ease-in-out infinite;
+        }
+
+        @keyframes logoShine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-glass-hover);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .icon-btn .tooltip {
+            position: absolute;
+            bottom: -36px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-fast);
+            border: 1px solid var(--border-secondary);
+        }
+
+        .icon-btn:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .theme-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-chip:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .theme-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Main Content */
+        .main {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 72px);
+        }
+
+        .main::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .main::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 3px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-primary);
+            border-radius: var(--radius-xl);
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(59, 130, 246, 0.03) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow-strong);
+        }
+
+        .upload-zone:hover::before {
+            opacity: 1;
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+            transform: scale(1.02);
+            box-shadow: var(--shadow-glow-strong);
+        }
+
+        .upload-zone.dragover .upload-icon-wrapper {
+            transform: scale(1.15);
+        }
+
+        .upload-icon-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-bounce);
+            position: relative;
+        }
+
+        .upload-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px dashed var(--accent-primary);
+            opacity: 0.3;
+            animation: uploadSpin 15s linear infinite;
+        }
+
+        @keyframes uploadSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .upload-icon-wrapper i {
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            animation: uploadBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes uploadBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .upload-zone h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .upload-zone p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .upload-formats {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .format-badge {
+            padding: 4px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            border: 1px solid var(--border-secondary);
+        }
+
+        /* Card Component */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            opacity: 0.5;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title i {
+            color: var(--accent-primary);
+        }
+
+        /* File Info Card */
+        .file-info-card {
+            margin-top: 1.5rem;
+            animation: cardSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cardSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+
+        .file-icon-lg {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 8px 20px var(--accent-glow);
+            flex-shrink: 0;
+        }
+
+        .file-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: inherit;
+            padding: 0;
+            outline: none;
+            letter-spacing: -0.02em;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .file-name-input:focus {
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .file-meta-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .file-meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .file-meta-tag i {
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+        }
+
+        .file-close-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            color: var(--text-secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .file-close-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* Metadata Grid */
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metadata-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .metadata-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .metadata-card .label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            margin-bottom: 0.35rem;
+        }
+
+        .metadata-card .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        /* Video Preview */
+        .video-preview-wrapper {
+            margin-bottom: 1.5rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #000;
+            border: 1px solid var(--border-secondary);
+            position: relative;
+        }
+
+        .video-preview-wrapper video {
+            width: 100%;
+            display: block;
+            max-height: 300px;
+            object-fit: contain;
+            background: #000;
+        }
+
+        /* Waveform */
+        .waveform-container {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .waveform-canvas-wrapper {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-secondary);
+            background: var(--bg-glass);
+            position: relative;
+        }
+
+        #waveformCanvas {
+            width: 100%;
+            height: 100px;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .waveform-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.03));
+            pointer-events: none;
+        }
+
+        /* Audio Controls */
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-glass);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .play-btn-round {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            flex-shrink: 0;
+        }
+
+        .play-btn-round:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px var(--accent-glow-strong);
+        }
+
+        .play-btn-round:active {
+            transform: scale(0.95);
+        }
+
+        .time-display {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .seek-bar-wrapper {
+            flex: 1;
+            position: relative;
+            height: 6px;
+        }
+
+        .seek-bar {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--border-secondary);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .seek-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: var(--transition-fast);
+        }
+
+        .seek-bar::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .seek-bar::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 100px;
+        }
+
+        .volume-control i {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .volume-control i:hover {
+            color: var(--accent-primary);
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 4px;
+            background: var(--border-secondary);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Export Section */
+        .export-section {
+            margin-top: 1.5rem;
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .format-card {
+            background: var(--bg-glass);
+            border: 2px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .format-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .format-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.08);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .format-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        .format-card .format-name {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+        }
+
+        .format-card .format-desc {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            margin-top: 0.15rem;
+        }
+
+        .format-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Quality Settings */
+        .quality-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .quality-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .quality-label span:first-child {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        .quality-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .quality-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--border-secondary);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            cursor: pointer;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        .quality-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.85rem 1.75rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            font-family: inherit;
+            letter-spacing: -0.01em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px var(--accent-glow-strong);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-secondary);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.6rem 1rem;
+        }
+
+        .btn-ghost:hover {
+            color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-lg {
+            padding: 1.1rem 2.5rem;
+            font-size: 1rem;
+            border-radius: var(--radius-lg);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .convert-btn-wrapper {
+            margin-top: 1.5rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-action {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            color: var(--text-secondary);
+        }
+
+        .quick-action:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .quick-action.active {
+            border-color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.08);
+            color: var(--accent-primary);
+        }
+
+        .quick-action i {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.35rem;
+            color: var(--accent-primary);
+        }
+
+        .quick-action span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin-top: 1.5rem;
+            animation: cardSlideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .progress-card {
+            text-align: center;
+            padding: 2.5rem;
+        }
+
+        .progress-ring-wrapper {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            margin: 0 auto 1.5rem;
+        }
+
+        .progress-ring-wrapper svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--border-secondary);
+            stroke-width: 6;
+        }
+
+        .progress-ring-fg {
+            fill: none;
+            stroke: url(#progressGradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 0 440;
+            transition: stroke-dasharray 0.3s ease;
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .progress-percentage .percent {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .progress-status {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-substatus {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .progress-step {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-secondary);
+            transition: var(--transition);
+        }
+
+        .progress-step.active {
+            background: var(--accent-primary);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .progress-step.done {
+            background: var(--success);
+        }
+
+        /* Success State */
+        .success-card {
+            text-align: center;
+            padding: 2.5rem;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--success);
+            animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes successPop {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--bg-glass);
+            backdrop-filter: blur(24px);
+            border-left: 1px solid var(--border-secondary);
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 72px);
+            position: sticky;
+            top: 72px;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 2px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-tertiary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-title i {
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+        }
+
+        /* Settings Controls */
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .setting-label i {
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--border-secondary);
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .toggle-switch input:checked + .toggle-track {
+            background: var(--accent-primary);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toggle-switch input:checked ~ .toggle-thumb {
+            left: 22px;
+        }
+
+        /* Volume Slider in Settings */
+        .setting-slider {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .setting-slider-row {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* History Items */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .history-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            padding: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .history-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .history-item-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item-format {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent-primary);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .history-item-date {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-tertiary);
+        }
+
+        .history-empty i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.75rem;
+            opacity: 0.3;
+        }
+
+        .history-empty p {
+            font-size: 0.85rem;
+        }
+
+        /* Overlays */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 480px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: var(--transition);
+        }
+
+        .overlay.active .overlay-panel {
+            transform: scale(1) translateY(0);
+        }
+
+        .overlay-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .overlay-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Theme Picker */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .theme-option {
+            text-align: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            transition: var(--transition);
+            background: var(--bg-glass);
+        }
+
+        .theme-option:hover {
+            border-color: var(--border-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .theme-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 0.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-swatch::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            opacity: 0.7;
+        }
+
+        .theme-option-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+        }
+
+        /* FFmpeg Loading State */
+        .ffmpeg-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-lg);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .ffmpeg-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning);
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        .ffmpeg-status .dot.ready {
+            background: var(--success);
+            animation: none;
+        }
+
+        .ffmpeg-status .dot.error {
+            background: var(--error);
+            animation: none;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-secondary);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px);
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-width: 280px;
+            max-width: 400px;
+        }
+
+        .toast.removing {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(100px) scale(0.8); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes toastOut {
+            to { opacity: 0; transform: translateX(100px) scale(0.8); }
+        }
+
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .toast-error .toast-icon { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+        .toast-info .toast-icon { background: rgba(139, 92, 246, 0.1); color: var(--accent-primary); }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .toast-message {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.1rem;
+        }
+
+        /* Responsive */
         @media (max-width: 1200px) {
             .app-container {
                 grid-template-columns: 1fr;
@@ -107,643 +1748,471 @@
                     "main"
                     "sidebar";
             }
-        }
 
-        @media (max-width: 768px) {
-            .app-container {
-                grid-template-rows: 70px 1fr auto;
-            }
-        }
-
-        /* Header */
-        .header {
-            grid-area: header;
-            backdrop-filter: blur(20px);
-            background: var(--bg-glass);
-            border-bottom: 1px solid var(--border-primary);
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .theme-toggle, .theme-selector {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-primary);
-            color: var(--text-primary);
-            padding: 0.75rem;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        .theme-toggle:hover, .theme-selector:hover {
-            background: var(--bg-glass-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .theme-selector {
-            min-width: 120px;
-            text-align: center;
-        }
-
-        .auth-btn {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius);
-            font-weight: 600;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Main Content */
-        .main {
-            grid-area: main;
-            padding: 2rem;
-            overflow-y: auto;
-            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .upload-zone {
-            border: 3px dashed var(--border-primary);
-            border-radius: var(--radius);
-            padding: 4rem 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--gradient-primary);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-zone:hover {
-            background: var(--bg-glass-hover);
-            border-color: var(--accent-primary);
-            transform: scale(1.02);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .upload-zone.dragover {
-            border-color: var(--accent-primary);
-            background: rgba(139, 92, 246, 0.1);
-            transform: scale(1.05);
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            color: var(--accent-primary);
-            margin-bottom: 1rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* File Info & Controls */
-        .file-info {
-            margin: 2rem 0;
-            padding: 2rem;
-            background: var(--bg-glass);
-            border-radius: var(--radius);
-            border: 1px solid var(--border-primary);
-            backdrop-filter: blur(20px);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.6s 0.2s forwards;
-        }
-
-        @keyframes slideUp {
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .file-metadata {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .metadata-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .metadata-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-        }
-
-        .metadata-value {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .rename-input {
-            background: transparent;
-            border: 1px solid var(--border-primary);
-            color: var(--text-primary);
-            padding: 0.75rem;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .rename-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: var(--accent-glow);
-        }
-
-        /* Waveform & Preview */
-        .audio-preview {
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        #waveformCanvas {
-            width: 100%;
-            height: 120px;
-            border-radius: var(--radius);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-primary);
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: var(--radius);
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 25px 50px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            border: 1px solid var(--border-primary);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* Progress Ring */
-        .progress-container {
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .progress-ring {
-            width: 200px;
-            height: 200px;
-            position: relative;
-            margin: 0 auto 1rem;
-        }
-
-        .progress-circle {
-            transform: rotate(-90deg);
-            transition: stroke-dasharray 0.3s ease;
-        }
-
-        .progress-circle-bg {
-            fill: none;
-            stroke: var(--border-primary);
-            stroke-width: 8;
-        }
-
-        .progress-circle-fg {
-            fill: none;
-            stroke: url(#gradient);
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-dasharray: 0 471;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            grid-area: sidebar;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid var(--border-primary);
-            padding: 2rem;
-            overflow-y: auto;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-        }
-
-        @media (max-width: 1200px) {
             .sidebar {
+                max-height: none;
                 position: relative;
-                height: auto;
+                top: 0;
                 border-left: none;
-                border-top: 1px solid var(--border-primary);
+                border-top: 1px solid var(--border-secondary);
+            }
+
+            .main {
+                max-height: none;
             }
         }
 
-        .history, .settings {
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .history-item {
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 16px;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid var(--border-primary);
-        }
-
-        .history-item:hover {
-            transform: translateX(5px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Export Options */
-        .export-options {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .format-option {
-            flex: 1;
-            min-width: 100px;
-        }
-
-        /* Pro Features */
-        .pro-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .feature-btn {
-            height: 60px;
-            padding: 0.75rem;
-            text-align: center;
-            font-size: 0.875rem;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
+            .header {
+                padding: 0 1rem;
+                height: 64px;
+            }
+
+            .logo-text {
+                font-size: 1.25rem;
+            }
+
+            .logo-badge {
+                display: none;
+            }
+
+            .theme-chip span {
+                display: none;
+            }
+
             .main {
                 padding: 1rem;
             }
-            
-            .header {
-                padding: 0 1rem;
+
+            .section-header h1 {
+                font-size: 1.5rem;
             }
-            
+
             .upload-zone {
-                padding: 2rem 1rem;
+                padding: 2.5rem 1.5rem;
+                border-radius: var(--radius-lg);
             }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
+
+            .upload-icon-wrapper {
+                width: 80px;
+                height: 80px;
             }
-            
-            .btn {
+
+            .upload-icon-wrapper i {
+                font-size: 2rem;
+            }
+
+            .upload-zone h2 {
+                font-size: 1.1rem;
+            }
+
+            .audio-controls {
+                flex-wrap: wrap;
+            }
+
+            .volume-control {
+                width: 100%;
                 justify-content: center;
+                padding-top: 0.5rem;
+                border-top: 1px solid var(--border-secondary);
+            }
+
+            .format-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+            }
+
+            .toast {
+                min-width: auto;
+            }
+
+            .sidebar {
+                padding: 1rem;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        /* Overlay Pages */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        @media (max-width: 480px) {
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .metadata-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .format-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .success-actions {
+                flex-direction: column;
+            }
+
+            .success-actions .btn {
+                width: 100%;
+            }
         }
 
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .overlay-content {
-            background: var(--bg-glass);
-            padding: 3rem;
-            border-radius: var(--radius);
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-primary);
-            transform: scale(0.8) translateY(20px);
-            transition: var(--transition);
-        }
-
-        .overlay.active .overlay-content {
-            transform: scale(1) translateY(0);
-        }
-
-        /* Theme Preview */
-        .theme-preview {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .theme-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .theme-swatch.active {
-            border-color: var(--accent-primary);
-            transform: scale(1.2);
-        }
-
-        /* Loading States */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--border-primary);
-            border-radius: 50%;
-            border-top-color: var(--accent-primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Scrollbar */
+        /* Scrollbar global */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
+            background: var(--border-primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
             background: var(--accent-primary);
-            border-radius: 4px;
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Focus styles */
+        *:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body data-theme="dark">
-    <!-- Animated Particles -->
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="bg-gradient-orb"></div>
+        <div class="bg-gradient-orb"></div>
+        <div class="bg-gradient-orb"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-noise"></div>
+    </div>
+
     <div id="particles"></div>
+
+    <div class="toast-container" id="toastContainer"></div>
 
     <div class="app-container">
         <!-- Header -->
-        <header class="header">
-            <div class="logo" onclick="resetApp()">🎵 Converta Pro</div>
+        <header class="header" id="header">
+            <div class="logo-group" onclick="resetApp()">
+                <div class="logo-icon"><i class="fas fa-waveform-lines"></i></div>
+                <span class="logo-text">Converta</span>
+                <span class="logo-badge">Pro</span>
+            </div>
             <div class="header-actions">
-                <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <div class="theme-selector" onclick="toggleThemeOverlay()">
-                    <span id="currentTheme">Indigo</span> <i class="fas fa-chevron-down"></i>
+                <div class="ffmpeg-status" id="ffmpegStatus">
+                    <span class="dot" id="ffmpegDot"></span>
+                    <span id="ffmpegStatusText">Loading engine...</span>
                 </div>
-                <button class="auth-btn" id="authBtn" onclick="toggleAuth()">
-                    <i class="fab fa-google"></i> Sign In
+                <div class="theme-chip" onclick="toggleThemeOverlay()">
+                    <span class="theme-dot"></span>
+                    <span id="currentThemeName">Indigo</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.65rem;"></i>
+                </div>
+                <button class="icon-btn" onclick="toggleTheme()" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                    <span class="tooltip">Toggle theme</span>
                 </button>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="main">
+        <main class="main" id="mainContent">
+            <div class="section-header">
+                <h1>Convert Video to <span class="gradient-text">Audio</span></h1>
+                <p>Extract high-quality audio from any video file — fast, private, and entirely in your browser.</p>
+            </div>
+
             <!-- Upload Zone -->
-            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon-wrapper">
+                    <i class="fas fa-cloud-arrow-up"></i>
                 </div>
                 <h2>Drop your video here or click to browse</h2>
-                <p style="color: var(--text-secondary);">Supports MP4, MOV, AVI, MKV up to 500MB</p>
+                <p>Your files never leave your device — all processing happens locally.</p>
+                <div class="upload-formats">
+                    <span class="format-badge">MP4</span>
+                    <span class="format-badge">MOV</span>
+                    <span class="format-badge">AVI</span>
+                    <span class="format-badge">MKV</span>
+                    <span class="format-badge">WEBM</span>
+                    <span class="format-badge">FLV</span>
+                </div>
                 <input type="file" id="fileInput" accept="video/*" style="display: none;">
             </div>
 
-            <!-- File Info -->
-            <div class="file-info" id="fileInfo" style="display: none;">
-                <div class="file-metadata">
-                    <div class="metadata-item">
-                        <label class="metadata-label">Filename</label>
-                        <div class="metadata-value">
-                            <input type="text" class="rename-input" id="fileNameInput" placeholder="Enter new filename">
+            <!-- File Info (hidden by default) -->
+            <div id="fileInfoSection" class="hidden">
+                <div class="card file-info-card">
+                    <div class="file-header">
+                        <div class="file-icon-lg"><i class="fas fa-film"></i></div>
+                        <div class="file-details">
+                            <input type="text" class="file-name-input" id="fileNameInput" placeholder="Output filename" spellcheck="false">
+                            <div class="file-meta-row">
+                                <span class="file-meta-tag"><i class="fas fa-clock"></i> <span id="fileDuration">--:--</span></span>
+                                <span class="file-meta-tag"><i class="fas fa-weight-hanging"></i> <span id="fileSize">--</span></span>
+                                <span class="file-meta-tag"><i class="fas fa-file-video"></i> <span id="fileFormat">--</span></span>
+                            </div>
+                        </div>
+                        <button class="file-close-btn" onclick="resetApp()" aria-label="Remove file">
+                            <i class="fas fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Video Preview -->
+                    <div class="video-preview-wrapper" id="videoPreviewWrapper">
+                        <video id="videoPreview" controls preload="metadata"></video>
+                    </div>
+
+                    <!-- Metadata Grid -->
+                    <div class="metadata-grid" id="metadataGrid">
+                        <div class="metadata-card">
+                            <div class="label">Duration</div>
+                            <div class="value" id="metaDuration">--:--</div>
+                        </div>
+                        <div class="metadata-card">
+                            <div class="label">File Size</div>
+                            <div class="value" id="metaSize">--</div>
+                        </div>
+                        <div class="metadata-card">
+                            <div class="label">Video Codec</div>
+                            <div class="value" id="metaCodec">--</div>
+                        </div>
+                        <div class="metadata-card">
+                            <div class="label">Resolution</div>
+                            <div class="value" id="metaResolution">--</div>
                         </div>
                     </div>
-                    <div class="metadata-item">
-                        <label class="metadata-label">Duration</label>
-                        <div class="metadata-value" id="duration">--:--</div>
-                    </div>
-                    <div class="metadata-item">
-                        <label class="metadata-label">Size</label>
-                        <div class="metadata-value" id="fileSize">--</div>
-                    </div>
-                    <div class="metadata-item">
-                        <label class="metadata-label">Format</label>
-                        <div class="metadata-value" id="fileFormat">Unknown</div>
-                    </div>
-                </div>
 
-                <!-- Pro Features -->
-                <div class="pro-features">
-                    <button class="feature-btn btn-secondary" onclick="applyPreset('loud')">
-                        <i class="fas fa-volume-up"></i><br>Loud
-                    </button>
-                    <button class="feature-btn btn-secondary" onclick="applyPreset('clear')">
-                        <i class="fas fa-magic"></i><br>Clear
-                    </button>
-                    <button class="feature-btn btn-secondary" onclick="toggleNormalizer()">
-                        <i class="fas fa-chart-line"></i><br>Normalize
-                    </button>
-                    <button class="feature-btn btn-secondary" onclick="enableBatchMode()">
-                        <i class="fas fa-layer-group"></i><br>Batch
-                    </button>
-                </div>
+                    <!-- Waveform -->
+                    <div class="waveform-container">
+                        <div class="card-title"><i class="fas fa-wave-square"></i> Audio Waveform</div>
+                        <div class="waveform-canvas-wrapper">
+                            <canvas id="waveformCanvas"></canvas>
+                            <div class="waveform-overlay"></div>
+                        </div>
+                    </div>
 
-                <!-- Audio Preview -->
-                <div class="audio-preview">
-                    <canvas id="waveformCanvas"></canvas>
-                    <div class="controls">
-                        <button class="btn btn-secondary" id="playBtn" onclick="togglePlayback()">
-                            <i class="fas fa-play"></i> Play Preview
+                    <!-- Audio Controls -->
+                    <div class="audio-controls" id="audioControls">
+                        <button class="play-btn-round" id="playBtn" onclick="togglePlayback()">
+                            <i class="fas fa-play" id="playIcon"></i>
                         </button>
-                        <button class="btn btn-primary" id="convertBtn" onclick="startConversion()" disabled>
-                            <i class="fas fa-download"></i> Convert to Audio
+                        <div class="seek-bar-wrapper">
+                            <input type="range" class="seek-bar" id="seekBar" min="0" max="100" value="0" step="0.1">
+                        </div>
+                        <div class="time-display">
+                            <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+                        </div>
+                        <div class="volume-control">
+                            <i class="fas fa-volume-high" id="volumeIcon" onclick="toggleMute()"></i>
+                            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card-title" style="margin-top: 0.5rem;"><i class="fas fa-bolt"></i> Quick Presets</div>
+                    <div class="quick-actions">
+                        <button class="quick-action" onclick="applyPreset('podcast')" id="presetPodcast">
+                            <i class="fas fa-podcast"></i>
+                            <span>Podcast</span>
+                        </button>
+                        <button class="quick-action" onclick="applyPreset('music')" id="presetMusic">
+                            <i class="fas fa-music"></i>
+                            <span>Music HQ</span>
+                        </button>
+                        <button class="quick-action" onclick="applyPreset('voice')" id="presetVoice">
+                            <i class="fas fa-microphone"></i>
+                            <span>Voice</span>
+                        </button>
+                        <button class="quick-action" onclick="applyPreset('ringtone')" id="presetRingtone">
+                            <i class="fas fa-bell"></i>
+                            <span>Ringtone</span>
                         </button>
                     </div>
-                </div>
 
-                <!-- Export Options -->
-                <div style="text-align: center; margin-top: 1rem;">
-                    <label>Export as: </label>
-                    <div class="export-options">
-                        <label class="format-option">
-                            <input type="radio" name="format" value="mp3" checked> MP3
-                        </label>
-                        <label class="format-option">
-                            <input type="radio" name="format" value="wav"> WAV
-                        </label>
-                        <label class="format-option">
-                            <input type="radio" name="format" value="aac"> AAC
-                        </label>
+                    <!-- Export Section -->
+                    <div class="export-section">
+                        <div class="card-title"><i class="fas fa-file-export"></i> Output Format</div>
+                        <div class="format-grid" id="formatGrid">
+                            <label class="format-card selected" data-format="mp3">
+                                <input type="radio" name="format" value="mp3" checked>
+                                <div class="format-name">MP3</div>
+                                <div class="format-desc">Compact</div>
+                            </label>
+                            <label class="format-card" data-format="wav">
+                                <input type="radio" name="format" value="wav">
+                                <div class="format-name">WAV</div>
+                                <div class="format-desc">Lossless</div>
+                            </label>
+                            <label class="format-card" data-format="aac">
+                                <input type="radio" name="format" value="aac">
+                                <div class="format-name">AAC</div>
+                                <div class="format-desc">Modern</div>
+                            </label>
+                            <label class="format-card" data-format="ogg">
+                                <input type="radio" name="format" value="ogg">
+                                <div class="format-name">OGG</div>
+                                <div class="format-desc">Open</div>
+                            </label>
+                            <label class="format-card" data-format="flac">
+                                <input type="radio" name="format" value="flac">
+                                <div class="format-name">FLAC</div>
+                                <div class="format-desc">Hi-Fi</div>
+                            </label>
+                            <label class="format-card" data-format="m4a">
+                                <input type="radio" name="format" value="m4a">
+                                <div class="format-name">M4A</div>
+                                <div class="format-desc">Apple</div>
+                            </label>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="quality-section" id="qualitySection">
+                            <div class="quality-label">
+                                <span>Bitrate</span>
+                                <span class="quality-value" id="qualityValue">320 kbps</span>
+                            </div>
+                            <input type="range" class="quality-slider" id="qualitySlider" min="64" max="320" step="32" value="320">
+                        </div>
+
+                        <!-- Convert Button -->
+                        <div class="convert-btn-wrapper">
+                            <button class="btn btn-primary btn-lg btn-full" id="convertBtn" onclick="startConversion()" disabled>
+                                <i class="fas fa-bolt"></i> Convert & Download
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Progress -->
-            <div class="progress-container" id="progressContainer" style="display: none;">
-                <div class="progress-ring">
-                    <svg width="200" height="200">
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="var(--accent-primary)"/>
-                                <stop offset="100%" stop-color="var(--accent-secondary)"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="progress-circle-bg" cx="100" cy="100" r="75"/>
-                        <circle class="progress-circle-fg" cx="100" cy="100" r="75" id="progressCircle"/>
-                    </svg>
-                    <div class="progress-text" id="progressText">0%</div>
+            <!-- Progress Section -->
+            <div id="progressSection" class="hidden">
+                <div class="card progress-card progress-section">
+                    <div class="progress-ring-wrapper">
+                        <svg width="180" height="180" viewBox="0 0 180 180">
+                            <defs>
+                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="var(--accent-primary)"/>
+                                    <stop offset="100%" stop-color="var(--accent-secondary)"/>
+                                </linearGradient>
+                            </defs>
+                            <circle class="progress-ring-bg" cx="90" cy="90" r="70"/>
+                            <circle class="progress-ring-fg" cx="90" cy="90" r="70" id="progressCircle"/>
+                        </svg>
+                        <div class="progress-percentage">
+                            <div class="number" id="progressNumber">0</div>
+                            <div class="percent">%</div>
+                        </div>
+                    </div>
+                    <div class="progress-status" id="progressStatus">Initializing...</div>
+                    <div class="progress-substatus" id="progressSubstatus">Preparing conversion engine</div>
+                    <div class="progress-steps">
+                        <div class="progress-step active" id="step1"></div>
+                        <div class="progress-step" id="step2"></div>
+                        <div class="progress-step" id="step3"></div>
+                        <div class="progress-step" id="step4"></div>
+                    </div>
                 </div>
-                <p id="progressLabel">Preparing FFmpeg...</p>
+            </div>
+
+            <!-- Success Section -->
+            <div id="successSection" class="hidden">
+                <div class="card success-card">
+                    <div class="success-icon"><i class="fas fa-check"></i></div>
+                    <h3>Conversion Complete!</h3>
+                    <p id="successMessage">Your audio file has been downloaded successfully.</p>
+                    <div class="success-actions">
+                        <button class="btn btn-primary" onclick="downloadAgain()">
+                            <i class="fas fa-download"></i> Download Again
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetApp()">
+                            <i class="fas fa-plus"></i> Convert Another
+                        </button>
+                    </div>
+                </div>
             </div>
         </main>
 
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="history">
-                <h3 class="section-title">
-                    <i class="fas fa-history"></i> Conversion History
-                </h3>
-                <div id="historyList">Sign in to save your conversions</div>
+            <div class="sidebar-section">
+                <div class="sidebar-title"><i class="fas fa-sliders"></i> Audio Settings</div>
+                <div class="setting-row">
+                    <span class="setting-label"><i class="fas fa-chart-line"></i> Normalize Volume</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="normalizeAudio">
+                        <span class="toggle-track"></span>
+                        <span class="toggle-thumb"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><i class="fas fa-broom"></i> Noise Reduction</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="removeNoise">
+                        <span class="toggle-track"></span>
+                        <span class="toggle-thumb"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><i class="fas fa-scissors"></i> Fade In/Out</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="fadeEffect">
+                        <span class="toggle-track"></span>
+                        <span class="toggle-thumb"></span>
+                    </label>
+                </div>
+                <div class="setting-row setting-slider-row" style="flex-direction: column; align-items: stretch;">
+                    <div class="slider-header">
+                        <span class="setting-label"><i class="fas fa-volume-high"></i> Output Volume</span>
+                        <span class="quality-value" id="outputVolumeValue">1.0x</span>
+                    </div>
+                    <input type="range" class="quality-slider setting-slider" id="outputVolumeSlider" min="0.5" max="2.0" step="0.1" value="1.0">
+                </div>
+                <div class="setting-row" id="sampleRateRow">
+                    <span class="setting-label"><i class="fas fa-wave-square"></i> Sample Rate</span>
+                    <select id="sampleRate" style="background: var(--bg-glass); border: 1px solid var(--border-secondary); color: var(--text-primary); padding: 0.4rem 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.8rem; cursor: pointer;">
+                        <option value="44100">44.1 kHz</option>
+                        <option value="48000">48 kHz</option>
+                        <option value="22050">22 kHz</option>
+                        <option value="16000">16 kHz</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <span class="setting-label"><i class="fas fa-headphones"></i> Channels</span>
+                    <select id="channels" style="background: var(--bg-glass); border: 1px solid var(--border-secondary); color: var(--text-primary); padding: 0.4rem 0.6rem; border-radius: 8px; font-family: inherit; font-size: 0.8rem; cursor: pointer;">
+                        <option value="2">Stereo</option>
+                        <option value="1">Mono</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="settings">
-                <h3 class="section-title">
-                    <i class="fas fa-sliders-h"></i> Pro Settings
-                </h3>
-                <div style="display: grid; gap: 1rem;">
-                    <label>
-                        <input type="checkbox" id="normalizeAudio"> Normalize Volume
-                    </label>
-                    <label>
-                        <input type="range" id="volumeSlider" min="0.5" max="2" step="0.1" value="1"> Volume: <span id="volumeValue">1.0x</span>
-                    </label>
-                    <label>
-                        <input type="checkbox" id="removeNoise"> Noise Reduction
-                    </label>
+            <div class="sidebar-section">
+                <div class="sidebar-title"><i class="fas fa-clock-rotate-left"></i> Recent Conversions</div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">
+                        <i class="fas fa-inbox"></i>
+                        <p>No conversions yet.<br>Upload a video to get started.</p>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -751,442 +2220,846 @@
 
     <!-- Theme Overlay -->
     <div class="overlay" id="themeOverlay">
-        <div class="overlay-content">
-            <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-palette"></i> Choose Theme</h2>
-            <div id="themePreviews" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;"></div>
-            <button class="btn btn-primary" onclick="toggleThemeOverlay()" style="width: 100%; margin-top: 2rem;">
+        <div class="overlay-panel">
+            <div class="overlay-header">
+                <h2><i class="fas fa-palette" style="color: var(--accent-primary);"></i> Color Theme</h2>
+                <button class="icon-btn" onclick="toggleThemeOverlay()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="theme-grid" id="themeGrid"></div>
+            <button class="btn btn-primary btn-full" onclick="toggleThemeOverlay()" style="margin-top: 1.5rem;">
                 Done
             </button>
         </div>
     </div>
 
-    <!-- Auth Overlay -->
-    <div class="overlay" id="authOverlay">
-        <div class="overlay-content">
-            <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-sign-in-alt"></i> Sign In</h2>
-            <div id="g_id_onload"></div>
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
-            <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary);">Or use email/password</p>
-            <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="emailLogin()">Email Login</button>
-        </div>
-    </div>
-
     <script>
-        // Global State
+        // =====================================================
+        // GLOBAL STATE
+        // =====================================================
         let currentFile = null;
+        let videoElement = null;
         let audioContext = null;
         let audioBuffer = null;
+        let audioSource = null;
         let isPlaying = false;
-        let ffmpeg = null;
-        let user = null;
-        let currentTheme = 'indigo';
+        let playbackStartTime = 0;
+        let playbackOffset = 0;
+        let ffmpegLoaded = false;
+        let ffmpegInstance = null;
+        let lastDownloadUrl = null;
+        let lastDownloadName = null;
         let isDark = true;
-        let history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+        let currentThemeName = 'indigo';
+        let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
+        let seekAnimFrame = null;
 
-        // Theme System (12 Professional Themes)
         const themes = {
-            indigo: { '--accent-primary': '#8b5cf6', '--accent-secondary': '#a78bfa', '--waveform-color': '#8b5cf6' },
-            emerald: { '--accent-primary': '#10b981', '--accent-secondary': '#34d399', '--waveform-color': '#10b981' },
-            rose: { '--accent-primary': '#ec4899', '--accent-secondary': '#f472b6', '--waveform-color': '#ec4899' },
-            amber: { '--accent-primary': '#f59e0b', '--accent-secondary': '#fbbf24', '--waveform-color': '#f59e0b' },
-            cyan: { '--accent-primary': '#06b6d4', '--accent-secondary': '#22d3ee', '--waveform-color': '#06b6d4' },
-            lime: { '--accent-primary': '#84cc16', '--accent-secondary': '#a3e635', '--waveform-color': '#84cc16' },
-            violet: { '--accent-primary': '#a855f7', '--accent-secondary': '#c084fc', '--waveform-color': '#a855f7' },
-            sky: { '--accent-primary': '#0ea5e9', '--accent-secondary': '#38bdf8', '--waveform-color': '#0ea5e9' },
-            orange: { '--accent-primary': '#f97316', '--accent-secondary': '#fb923c', '--waveform-color': '#f97316' },
-            pink: { '--accent-primary': '#ec4899', '--accent-secondary': '#f472b6', '--waveform-color': '#ec4899' },
-            teal: { '--accent-primary': '#14b8a6', '--accent-secondary': '#2dd4bf', '--waveform-color': '#14b8a6' },
-            fuchsia: { '--accent-primary': '#d946ef', '--accent-secondary': '#f0abfc', '--waveform-color': '#d946ef' }
+            indigo:  { primary: '#8b5cf6', secondary: '#a78bfa' },
+            emerald: { primary: '#10b981', secondary: '#34d399' },
+            rose:    { primary: '#f43f5e', secondary: '#fb7185' },
+            amber:   { primary: '#f59e0b', secondary: '#fbbf24' },
+            cyan:    { primary: '#06b6d4', secondary: '#22d3ee' },
+            sky:     { primary: '#0ea5e9', secondary: '#38bdf8' },
+            violet:  { primary: '#a855f7', secondary: '#c084fc' },
+            orange:  { primary: '#f97316', secondary: '#fb923c' },
+            pink:    { primary: '#ec4899', secondary: '#f472b6' },
+            teal:    { primary: '#14b8a6', secondary: '#2dd4bf' },
+            lime:    { primary: '#84cc16', secondary: '#a3e635' },
+            fuchsia: { primary: '#d946ef', secondary: '#e879f9' },
         };
 
-        // Initialize App
-        async function init() {
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+        window.addEventListener('load', () => {
             createParticles();
-            initFFmpeg();
-            updateHistory();
-            initGoogleAuth();
-            updateTheme();
-            document.getElementById('volumeSlider').addEventListener('input', function(e) {
-                document.getElementById('volumeValue').textContent = e.target.value + 'x';
-            });
-        }
+            loadSavedTheme();
+            updateHistoryUI();
+            initEventListeners();
+            loadFFmpeg();
+        });
 
-        // Particles Animation
         function createParticles() {
-            const particles = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.width = particle.style.height = (Math.random() * 4 + 2) + 'px';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (Math.random() * 20 + 20) + 's';
-                particles.appendChild(particle);
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                const size = Math.random() * 3 + 1;
+                p.style.width = p.style.height = size + 'px';
+                p.style.animationDuration = (Math.random() * 25 + 20) + 's';
+                p.style.animationDelay = (Math.random() * 25) + 's';
+                container.appendChild(p);
             }
         }
 
-        // FFmpeg Initialization
-        async function initFFmpeg() {
-            const { FFmpeg } = FFmpegWASM;
-            ffmpeg = new FFmpeg();
-            await ffmpeg.load({
-                coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
-                wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
-            });
-        }
+        // =====================================================
+        // FFMPEG - REAL CONVERSION ENGINE
+        // =====================================================
+        async function loadFFmpeg() {
+            const statusText = document.getElementById('ffmpegStatusText');
+            const statusDot = document.getElementById('ffmpegDot');
 
-        // File Handling
-        document.getElementById('fileInput').addEventListener('change', handleFile);
-        document.getElementById('uploadZone').addEventListener('dragover', handleDragOver);
-        document.getElementById('uploadZone').addEventListener('dragleave', handleDragLeave);
-        document.getElementById('uploadZone').addEventListener('drop', handleDrop);
+            try {
+                statusText.textContent = 'Loading FFmpeg...';
 
-        function handleDragOver(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.add('dragover');
-        }
+                // Load the FFmpeg library
+                const scriptCore = document.createElement('script');
+                scriptCore.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js';
+                
+                await new Promise((resolve, reject) => {
+                    scriptCore.onload = resolve;
+                    scriptCore.onerror = reject;
+                    document.head.appendChild(scriptCore);
+                });
 
-        function handleDragLeave(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.remove('dragover');
-        }
+                statusText.textContent = 'Initializing...';
 
-        function handleDrop(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.remove('dragover');
-            const files = Array.from(e.dataTransfer.files);
-            handleFiles(files);
-        }
+                const { FFmpeg } = FFmpegWASM;
+                ffmpegInstance = new FFmpeg();
 
-        async function handleFile(e) {
-            const files = Array.from(e.target.files);
-            handleFiles(files);
-        }
+                ffmpegInstance.on('log', ({ message }) => {
+                    console.log('[FFmpeg]', message);
+                });
 
-        async function handleFiles(files) {
-            if (files.length === 0) return;
-            currentFile = files[0];
-            
-            const fileInfo = document.getElementById('fileInfo');
-            document.getElementById('fileNameInput').value = currentFile.name.replace(/\.[^/.]+$/, '');
-            await loadFileMetadata(currentFile);
-            fileInfo.style.display = 'block';
-            await createAudioPreview(currentFile);
-            document.getElementById('convertBtn').disabled = false;
-        }
+                ffmpegInstance.on('progress', ({ progress, time }) => {
+                    if (progress >= 0 && progress <= 1) {
+                        updateProgress(progress);
+                    }
+                });
 
-        async function loadFileMetadata(file) {
-            const audio = new Audio(URL.createObjectURL(file));
-            return new Promise((resolve) => {
-                audio.onloadedmetadata = () => {
-                    document.getElementById('duration').textContent = formatTime(audio.duration);
-                    document.getElementById('fileSize').textContent = formatBytes(file.size);
-                    document.getElementById('fileFormat').textContent = file.name.split('.').pop().toUpperCase();
-                    resolve();
-                };
-            });
-        }
+                await ffmpegInstance.load({
+                    coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+                    wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
+                });
 
-        // Audio Preview & Waveform
-        async function createAudioPreview(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            renderWaveform();
-        }
+                ffmpegLoaded = true;
+                statusText.textContent = 'Engine ready';
+                statusDot.classList.add('ready');
+                
+                // Enable convert button if file is loaded
+                if (currentFile) {
+                    document.getElementById('convertBtn').disabled = false;
+                }
 
-        function renderWaveform() {
-            const canvas = document.getElementById('waveformCanvas');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = canvas.offsetWidth;
-            const height = canvas.height = canvas.offsetHeight;
-            
-            const barWidth = width / audioBuffer.length;
-            const barCount = Math.floor(width / 4);
-            
-            ctx.fillStyle = 'var(--bg-secondary)';
-            ctx.fillRect(0, 0, width, height);
-            
-            for (let i = 0; i < barCount; i++) {
-                const barHeight = (Math.abs(audioBuffer.getChannelData(0)[Math.floor((i / barCount) * audioBuffer.length)])) * height * 1.5;
-                const x = i * 4;
-                ctx.fillStyle = `hsl(${240 + barHeight / height * 60}, 70%, 50%)`;
-                ctx.shadowColor = 'var(--waveform-color)';
-                ctx.shadowBlur = 10;
-                ctx.fillRect(x, height/2 - barHeight/2, 2, barHeight);
+                showToast('success', 'Engine Ready', 'FFmpeg loaded successfully');
+            } catch (err) {
+                console.error('FFmpeg load error:', err);
+                statusText.textContent = 'Engine failed';
+                statusDot.classList.add('error');
+                showToast('error', 'Engine Error', 'Failed to load FFmpeg. Try refreshing.');
             }
         }
 
+        // =====================================================
+        // FILE HANDLING
+        // =====================================================
+        function initEventListeners() {
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('fileInput');
+
+            uploadZone.addEventListener('click', () => fileInput.click());
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    handleFileSelect(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+
+            // Format cards
+            document.querySelectorAll('.format-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.format-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    card.querySelector('input').checked = true;
+                    updateQualityForFormat();
+                });
+            });
+
+            // Quality slider
+            document.getElementById('qualitySlider').addEventListener('input', (e) => {
+                document.getElementById('qualityValue').textContent = e.target.value + ' kbps';
+            });
+
+            // Output volume slider
+            document.getElementById('outputVolumeSlider').addEventListener('input', (e) => {
+                document.getElementById('outputVolumeValue').textContent = parseFloat(e.target.value).toFixed(1) + 'x';
+            });
+
+            // Volume slider for preview
+            document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                if (videoElement) {
+                    videoElement.volume = parseFloat(e.target.value);
+                }
+                updateVolumeIcon(parseFloat(e.target.value));
+            });
+
+            // Seek bar
+            document.getElementById('seekBar').addEventListener('input', (e) => {
+                if (videoElement && videoElement.duration) {
+                    videoElement.currentTime = (parseFloat(e.target.value) / 100) * videoElement.duration;
+                }
+            });
+
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+            }, { passive: true });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' && e.target.type === 'text') return;
+                if (e.code === 'Space' && currentFile) {
+                    e.preventDefault();
+                    togglePlayback();
+                }
+            });
+        }
+
+        async function handleFileSelect(file) {
+            if (!file || !file.type.startsWith('video/')) {
+                showToast('error', 'Invalid File', 'Please select a video file.');
+                return;
+            }
+
+            currentFile = file;
+
+            // Stop any current playback
+            stopPlayback();
+
+            // Show file info section, hide others
+            document.getElementById('uploadZone').classList.add('hidden');
+            document.getElementById('fileInfoSection').classList.remove('hidden');
+            document.getElementById('progressSection').classList.add('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+
+            // Set filename
+            const baseName = file.name.replace(/\.[^/.]+$/, '');
+            document.getElementById('fileNameInput').value = baseName;
+
+            // Set basic meta
+            document.getElementById('fileSize').textContent = formatBytes(file.size);
+            document.getElementById('metaSize').textContent = formatBytes(file.size);
+            document.getElementById('fileFormat').textContent = file.name.split('.').pop().toUpperCase();
+
+            // Create video element for preview and metadata
+            const videoUrl = URL.createObjectURL(file);
+            videoElement = document.getElementById('videoPreview');
+            videoElement.src = videoUrl;
+
+            videoElement.addEventListener('loadedmetadata', () => {
+                const duration = videoElement.duration;
+                document.getElementById('fileDuration').textContent = formatTime(duration);
+                document.getElementById('metaDuration').textContent = formatTime(duration);
+                document.getElementById('totalTime').textContent = formatTime(duration);
+                document.getElementById('metaResolution').textContent = videoElement.videoWidth + '×' + videoElement.videoHeight;
+                document.getElementById('metaCodec').textContent = file.type.split('/')[1]?.toUpperCase() || '--';
+            }, { once: true });
+
+            videoElement.addEventListener('timeupdate', () => {
+                if (!videoElement.duration) return;
+                const pct = (videoElement.currentTime / videoElement.duration) * 100;
+                document.getElementById('seekBar').value = pct;
+                document.getElementById('currentTime').textContent = formatTime(videoElement.currentTime);
+            });
+
+            videoElement.addEventListener('ended', () => {
+                isPlaying = false;
+                document.getElementById('playIcon').className = 'fas fa-play';
+            });
+
+            // Generate waveform from the video's audio
+            await generateWaveform(file);
+
+            // Enable convert button only if FFmpeg is loaded
+            document.getElementById('convertBtn').disabled = !ffmpegLoaded;
+
+            showToast('info', 'File Loaded', `${file.name} is ready for conversion.`);
+        }
+
+        async function generateWaveform(file) {
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const decoded = await ctx.decodeAudioData(arrayBuffer);
+                
+                const canvas = document.getElementById('waveformCanvas');
+                const c = canvas.getContext('2d');
+                const dpr = window.devicePixelRatio || 1;
+                const rect = canvas.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                c.scale(dpr, dpr);
+                const width = rect.width;
+                const height = rect.height;
+
+                const data = decoded.getChannelData(0);
+                const step = Math.ceil(data.length / (width / 3));
+                const amp = height / 2;
+
+                c.clearRect(0, 0, width, height);
+
+                const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim();
+
+                for (let i = 0; i < width / 3; i++) {
+                    let min = 1.0;
+                    let max = -1.0;
+                    for (let j = 0; j < step; j++) {
+                        const datum = data[(i * step) + j];
+                        if (datum !== undefined) {
+                            if (datum < min) min = datum;
+                            if (datum > max) max = datum;
+                        }
+                    }
+                    const barHeight = Math.max(2, (max - min) * amp);
+                    const x = i * 3;
+                    const y = (height / 2) - (barHeight / 2);
+
+                    const gradient = c.createLinearGradient(0, y, 0, y + barHeight);
+                    gradient.addColorStop(0, accentColor);
+                    gradient.addColorStop(0.5, accentColor + 'cc');
+                    gradient.addColorStop(1, accentColor + '44');
+                    c.fillStyle = gradient;
+                    c.fillRect(x, y, 2, barHeight);
+                }
+
+                ctx.close();
+            } catch (err) {
+                console.warn('Waveform generation failed:', err);
+            }
+        }
+
+        // =====================================================
+        // PLAYBACK CONTROLS
+        // =====================================================
         function togglePlayback() {
-            if (!audioContext || !audioBuffer) return;
-            
-            const source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            const gainNode = audioContext.createGain();
-            gainNode.gain.value = parseFloat(document.getElementById('volumeSlider').value);
-            source.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
+            if (!videoElement) return;
+
             if (isPlaying) {
-                audioContext.suspend();
-                document.getElementById('playBtn').innerHTML = '<i class="fas fa-play"></i> Play Preview';
+                videoElement.pause();
+                document.getElementById('playIcon').className = 'fas fa-play';
             } else {
-                audioContext.resume();
-                source.start(0);
-                document.getElementById('playBtn').innerHTML = '<i class="fas fa-pause"></i> Playing...';
+                videoElement.play();
+                document.getElementById('playIcon').className = 'fas fa-pause';
             }
             isPlaying = !isPlaying;
         }
 
-        // FFmpeg Conversion
+        function stopPlayback() {
+            if (videoElement) {
+                videoElement.pause();
+                videoElement.currentTime = 0;
+            }
+            isPlaying = false;
+            const playIcon = document.getElementById('playIcon');
+            if (playIcon) playIcon.className = 'fas fa-play';
+        }
+
+        function toggleMute() {
+            if (!videoElement) return;
+            const slider = document.getElementById('volumeSlider');
+            if (videoElement.volume > 0) {
+                videoElement.dataset.prevVolume = videoElement.volume;
+                videoElement.volume = 0;
+                slider.value = 0;
+            } else {
+                videoElement.volume = parseFloat(videoElement.dataset.prevVolume || 1);
+                slider.value = videoElement.volume;
+            }
+            updateVolumeIcon(videoElement.volume);
+        }
+
+        function updateVolumeIcon(vol) {
+            const icon = document.getElementById('volumeIcon');
+            if (vol === 0) icon.className = 'fas fa-volume-xmark';
+            else if (vol < 0.5) icon.className = 'fas fa-volume-low';
+            else icon.className = 'fas fa-volume-high';
+        }
+
+        // =====================================================
+        // CONVERSION - REAL FFMPEG
+        // =====================================================
         async function startConversion() {
+            if (!currentFile || !ffmpegLoaded || !ffmpegInstance) {
+                showToast('error', 'Not Ready', 'Please wait for the engine to load.');
+                return;
+            }
+
             const format = document.querySelector('input[name="format"]:checked').value;
-            const outputName = document.getElementById('fileNameInput').value || 'output';
-            const progressContainer = document.getElementById('progressContainer');
-            const progressLabel = document.getElementById('progressLabel');
-            
-            progressContainer.style.display = 'block';
-            document.querySelectorAll('button').forEach(btn => btn.disabled = true);
-            
+            const outputName = (document.getElementById('fileNameInput').value || 'output').replace(/[^a-zA-Z0-9_\-\s]/g, '').trim() || 'output';
+            const bitrate = document.getElementById('qualitySlider').value;
+            const normalize = document.getElementById('normalizeAudio').checked;
+            const noiseReduction = document.getElementById('removeNoise').checked;
+            const fadeEffect = document.getElementById('fadeEffect').checked;
+            const volume = document.getElementById('outputVolumeSlider').value;
+            const sampleRate = document.getElementById('sampleRate').value;
+            const channelCount = document.getElementById('channels').value;
+
+            // Stop playback
+            stopPlayback();
+
+            // Show progress
+            document.getElementById('fileInfoSection').classList.add('hidden');
+            document.getElementById('progressSection').classList.remove('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+
+            setProgressStep(1);
+            updateProgress(0);
+            setProgressStatus('Reading file...', 'Loading video into memory');
+
             try {
-                progressLabel.textContent = 'Loading file...';
-                await ffmpeg.writeFile('input.' + currentFile.name.split('.').pop(), new Uint8Array(await currentFile.arrayBuffer()));
+                // Step 1: Write file
+                const fileData = new Uint8Array(await currentFile.arrayBuffer());
+                const inputExt = currentFile.name.split('.').pop();
+                const inputName = 'input.' + inputExt;
                 
-                let command = ['-i', 'input.' + currentFile.name.split('.').pop()];
+                await ffmpegInstance.writeFile(inputName, fileData);
+
+                setProgressStep(2);
+                setProgressStatus('Converting...', `Extracting audio as ${format.toUpperCase()}`);
+
+                // Build FFmpeg command
+                const command = ['-i', inputName];
+
+                // Audio filters
+                const audioFilters = [];
                 
-                // Pro features
-                if (document.getElementById('normalizeAudio').checked) {
-                    command.push('-af', 'loudnorm');
-                }
-                if (document.getElementById('removeNoise').checked) {
-                    command.push('-af', 'afftdn');
-                }
-                
-                // Volume adjustment
-                const volume = document.getElementById('volumeSlider').value;
-                if (volume !== '1') {
-                    command.push('-af', `volume=${volume}`);
-                }
-                
-                // Format-specific
-                if (format === 'mp3') {
-                    command.push('-c:a', 'libmp3lame', '-b:a', '320k');
-                } else if (format === 'wav') {
-                    command.push('-c:a', 'pcm_s16le');
-                } else if (format === 'aac') {
-                    command.push('-c:a', 'aac');
+                if (normalize) {
+                    audioFilters.push('loudnorm=I=-16:TP=-1.5:LRA=11');
                 }
                 
-                command.push(outputName + '.' + format);
+                if (noiseReduction) {
+                    audioFilters.push('highpass=f=80');
+                    audioFilters.push('lowpass=f=12000');
+                    audioFilters.push('afftdn=nf=-25');
+                }
+
+                if (volume !== '1' && volume !== '1.0') {
+                    audioFilters.push(`volume=${volume}`);
+                }
+
+                if (fadeEffect) {
+                    audioFilters.push('afade=t=in:ss=0:d=0.5');
+                    audioFilters.push('afade=t=out:st=end:d=0.5');
+                }
+
+                if (audioFilters.length > 0) {
+                    command.push('-af', audioFilters.join(','));
+                }
+
+                // No video stream
+                command.push('-vn');
+
+                // Sample rate
+                command.push('-ar', sampleRate);
+
+                // Channels
+                command.push('-ac', channelCount);
+
+                // Format-specific codec settings
+                let outputFileName;
+                switch (format) {
+                    case 'mp3':
+                        command.push('-c:a', 'libmp3lame', '-b:a', bitrate + 'k');
+                        outputFileName = outputName + '.mp3';
+                        break;
+                    case 'wav':
+                        command.push('-c:a', 'pcm_s16le');
+                        outputFileName = outputName + '.wav';
+                        break;
+                    case 'aac':
+                        command.push('-c:a', 'aac', '-b:a', bitrate + 'k');
+                        outputFileName = outputName + '.aac';
+                        break;
+                    case 'ogg':
+                        command.push('-c:a', 'libvorbis', '-b:a', bitrate + 'k');
+                        outputFileName = outputName + '.ogg';
+                        break;
+                    case 'flac':
+                        command.push('-c:a', 'flac');
+                        outputFileName = outputName + '.flac';
+                        break;
+                    case 'm4a':
+                        command.push('-c:a', 'aac', '-b:a', bitrate + 'k');
+                        outputFileName = outputName + '.m4a';
+                        break;
+                    default:
+                        command.push('-c:a', 'libmp3lame', '-b:a', bitrate + 'k');
+                        outputFileName = outputName + '.mp3';
+                }
+
+                command.push(outputFileName);
+
+                console.log('[Converta] FFmpeg command:', command.join(' '));
+
+                // Step 3: Execute conversion
+                setProgressStep(3);
+                await ffmpegInstance.exec(command);
+
+                // Step 4: Read output
+                setProgressStep(4);
+                setProgressStatus('Finalizing...', 'Preparing download');
+                updateProgress(0.95);
+
+                const outputData = await ffmpegInstance.readFile(outputFileName);
+
+                // Determine MIME type
+                const mimeTypes = {
+                    mp3: 'audio/mpeg',
+                    wav: 'audio/wav',
+                    aac: 'audio/aac',
+                    ogg: 'audio/ogg',
+                    flac: 'audio/flac',
+                    m4a: 'audio/mp4'
+                };
+
+                const blob = new Blob([outputData.buffer], { type: mimeTypes[format] || 'audio/mpeg' });
                 
-                progressLabel.textContent = 'Converting...';
-                await ffmpeg.exec(...command);
-                
-                const data = await ffmpeg.readFile(outputName + '.' + format);
-                const blob = new Blob([data.buffer], { type: 'audio/' + format });
-                const url = URL.createObjectURL(blob);
+                if (lastDownloadUrl) URL.revokeObjectURL(lastDownloadUrl);
+                lastDownloadUrl = URL.createObjectURL(blob);
+                lastDownloadName = outputFileName;
+
+                // Download
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = outputName + '.' + format;
+                a.href = lastDownloadUrl;
+                a.download = outputFileName;
+                document.body.appendChild(a);
                 a.click();
-                
+                document.body.removeChild(a);
+
+                updateProgress(1);
+
+                // Cleanup FFmpeg files
+                try {
+                    await ffmpegInstance.deleteFile(inputName);
+                    await ffmpegInstance.deleteFile(outputFileName);
+                } catch (e) { /* ignore */ }
+
                 // Save to history
-                saveToHistory(outputName + '.' + format, currentFile.size, format);
-                
-                progressLabel.textContent = 'Complete!';
-            } catch (error) {
-                console.error('Conversion failed:', error);
-                progressLabel.textContent = 'Conversion failed';
-            } finally {
+                saveToHistory(outputFileName, blob.size, format);
+
+                // Show success
                 setTimeout(() => {
-                    progressContainer.style.display = 'none';
-                    document.querySelectorAll('button').forEach(btn => btn.disabled = false);
-                }, 2000);
+                    document.getElementById('progressSection').classList.add('hidden');
+                    document.getElementById('successSection').classList.remove('hidden');
+                    document.getElementById('successMessage').textContent = 
+                        `${outputFileName} (${formatBytes(blob.size)}) has been downloaded.`;
+                    showToast('success', 'Done!', `${outputFileName} converted successfully.`);
+                }, 600);
+
+            } catch (err) {
+                console.error('Conversion failed:', err);
+                showToast('error', 'Conversion Failed', err.message || 'An error occurred during conversion.');
+                document.getElementById('progressSection').classList.add('hidden');
+                document.getElementById('fileInfoSection').classList.remove('hidden');
             }
         }
 
-        // Progress Ring Animation
-        function updateProgress(percent) {
+        // =====================================================
+        // PROGRESS HELPERS
+        // =====================================================
+        function updateProgress(pct) {
+            const circumference = 2 * Math.PI * 70; // r=70
             const circle = document.getElementById('progressCircle');
-            const text = document.getElementById('progressText');
-            const circumference = 471;
-            circle.style.strokeDasharray = `${percent * circumference} ${circumference}`;
-            text.textContent = Math.round(percent * 100) + '%';
+            const num = document.getElementById('progressNumber');
+            const val = Math.min(Math.max(pct, 0), 1);
+            circle.style.strokeDasharray = `${val * circumference} ${circumference}`;
+            num.textContent = Math.round(val * 100);
         }
 
-        // Theme Management
-        function toggleTheme() {
-            isDark = !isDark;
-            document.body.dataset.theme = isDark ? 'dark' : 'light';
-            document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        function setProgressStatus(status, sub) {
+            document.getElementById('progressStatus').textContent = status;
+            document.getElementById('progressSubstatus').textContent = sub;
         }
 
-        function changeTheme(themeName) {
-            currentTheme = themeName;
-            document.getElementById('currentTheme').textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-            Object.entries(themes[themeName]).forEach(([key, value]) => {
-                document.documentElement.style.setProperty(key, value);
-            });
-            localStorage.setItem('currentTheme', themeName);
-            toggleThemeOverlay();
-        }
-
-        function updateTheme() {
-            const savedTheme = localStorage.getItem('currentTheme') || 'indigo';
-            const savedMode = localStorage.getItem('theme') || 'dark';
-            currentTheme = savedTheme;
-            isDark = savedMode === 'dark';
-            document.body.dataset.theme = isDark ? 'dark' : 'light';
-            changeTheme(savedTheme);
-        }
-
-        function toggleThemeOverlay() {
-            const overlay = document.getElementById('themeOverlay');
-            overlay.classList.toggle('active');
-            if (overlay.classList.contains('active')) {
-                renderThemePreviews();
+        function setProgressStep(step) {
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('step' + i);
+                el.classList.remove('active', 'done');
+                if (i < step) el.classList.add('done');
+                else if (i === step) el.classList.add('active');
             }
         }
 
-        function renderThemePreviews() {
-            const container = document.getElementById('themePreviews');
-            container.innerHTML = '';
-            Object.entries(themes).forEach(([name, colors]) => {
-                const swatch = document.createElement('div');
-                swatch.className = 'theme-swatch';
-                swatch.title = name;
-                swatch.style.background = `linear-gradient(135deg, ${colors['--accent-primary']}, ${colors['--accent-secondary']})`;
-                if (name === currentTheme) swatch.classList.add('active');
-                swatch.onclick = () => changeTheme(name);
-                container.appendChild(swatch);
-            });
-        }
-
-        // Pro Features
+        // =====================================================
+        // PRESETS
+        // =====================================================
         function applyPreset(preset) {
-            if (preset === 'loud') {
-                document.getElementById('normalizeAudio').checked = true;
-                document.getElementById('volumeSlider').value = '1.5';
-                document.getElementById('volumeValue').textContent = '1.5x';
-            } else if (preset === 'clear') {
-                document.getElementById('removeNoise').checked = true;
-                document.getElementById('normalizeAudio').checked = true;
+            // Clear active states
+            document.querySelectorAll('.quick-action').forEach(q => q.classList.remove('active'));
+
+            switch (preset) {
+                case 'podcast':
+                    document.getElementById('presetPodcast').classList.add('active');
+                    selectFormat('mp3');
+                    document.getElementById('qualitySlider').value = 128;
+                    document.getElementById('qualityValue').textContent = '128 kbps';
+                    document.getElementById('normalizeAudio').checked = true;
+                    document.getElementById('removeNoise').checked = true;
+                    document.getElementById('channels').value = '1';
+                    document.getElementById('sampleRate').value = '44100';
+                    showToast('info', 'Preset Applied', 'Podcast preset: Mono, normalized, 128kbps MP3');
+                    break;
+                case 'music':
+                    document.getElementById('presetMusic').classList.add('active');
+                    selectFormat('flac');
+                    document.getElementById('qualitySlider').value = 320;
+                    document.getElementById('qualityValue').textContent = '320 kbps';
+                    document.getElementById('normalizeAudio').checked = false;
+                    document.getElementById('removeNoise').checked = false;
+                    document.getElementById('channels').value = '2';
+                    document.getElementById('sampleRate').value = '48000';
+                    showToast('info', 'Preset Applied', 'Music HQ preset: Stereo FLAC, 48kHz');
+                    break;
+                case 'voice':
+                    document.getElementById('presetVoice').classList.add('active');
+                    selectFormat('mp3');
+                    document.getElementById('qualitySlider').value = 96;
+                    document.getElementById('qualityValue').textContent = '96 kbps';
+                    document.getElementById('normalizeAudio').checked = true;
+                    document.getElementById('removeNoise').checked = true;
+                    document.getElementById('channels').value = '1';
+                    document.getElementById('sampleRate').value = '22050';
+                    showToast('info', 'Preset Applied', 'Voice preset: Mono, noise-reduced, 96kbps');
+                    break;
+                case 'ringtone':
+                    document.getElementById('presetRingtone').classList.add('active');
+                    selectFormat('m4a');
+                    document.getElementById('qualitySlider').value = 192;
+                    document.getElementById('qualityValue').textContent = '192 kbps';
+                    document.getElementById('normalizeAudio').checked = true;
+                    document.getElementById('removeNoise').checked = false;
+                    document.getElementById('fadeEffect').checked = true;
+                    document.getElementById('channels').value = '2';
+                    document.getElementById('sampleRate').value = '44100';
+                    showToast('info', 'Preset Applied', 'Ringtone preset: M4A with fade effects');
+                    break;
             }
         }
 
-        function toggleNormalizer() {
-            const checkbox = document.getElementById('normalizeAudio');
-            checkbox.checked = !checkbox.checked;
+        function selectFormat(fmt) {
+            document.querySelectorAll('.format-card').forEach(c => {
+                c.classList.remove('selected');
+                if (c.dataset.format === fmt) {
+                    c.classList.add('selected');
+                    c.querySelector('input').checked = true;
+                }
+            });
+            updateQualityForFormat();
         }
 
-        function enableBatchMode() {
-            alert('Batch mode coming soon in Pro version!');
+        function updateQualityForFormat() {
+            const format = document.querySelector('input[name="format"]:checked').value;
+            const qualitySection = document.getElementById('qualitySection');
+            if (format === 'wav' || format === 'flac') {
+                qualitySection.style.opacity = '0.4';
+                qualitySection.style.pointerEvents = 'none';
+            } else {
+                qualitySection.style.opacity = '1';
+                qualitySection.style.pointerEvents = 'auto';
+            }
         }
 
-        // History Management
+        // =====================================================
+        // DOWNLOAD AGAIN
+        // =====================================================
+        function downloadAgain() {
+            if (lastDownloadUrl && lastDownloadName) {
+                const a = document.createElement('a');
+                a.href = lastDownloadUrl;
+                a.download = lastDownloadName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast('success', 'Downloaded', lastDownloadName);
+            }
+        }
+
+        // =====================================================
+        // HISTORY
+        // =====================================================
         function saveToHistory(filename, size, format) {
             const entry = {
                 id: Date.now(),
                 filename,
                 size: formatBytes(size),
                 format,
-                date: new Date().toLocaleString(),
-                duration: document.getElementById('duration').textContent
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
-            history.unshift(entry);
-            history = history.slice(0, 50);
-            localStorage.setItem('conversionHistory', JSON.stringify(history));
-            updateHistory();
+            conversionHistory.unshift(entry);
+            if (conversionHistory.length > 30) conversionHistory = conversionHistory.slice(0, 30);
+            localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
+            updateHistoryUI();
         }
 
-        function updateHistory() {
+        function updateHistoryUI() {
             const container = document.getElementById('historyList');
-            if (history.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--text-secondary);">No conversions yet</div>';
+            if (conversionHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="history-empty">
+                        <i class="fas fa-inbox"></i>
+                        <p>No conversions yet.<br>Upload a video to get started.</p>
+                    </div>`;
                 return;
             }
-            container.innerHTML = history.map(entry => `
+            container.innerHTML = conversionHistory.map(entry => `
                 <div class="history-item">
-                    <div style="font-weight: 600; margin-bottom: 0.5rem;">${entry.filename}</div>
-                    <div style="font-size: 0.875rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
-                        <span>${entry.format.toUpperCase()}</span>
-                        <span>${entry.date}</span>
+                    <div class="history-item-name" title="${entry.filename}">${entry.filename}</div>
+                    <div class="history-item-meta">
+                        <span class="history-item-format">${entry.format}</span>
+                        <span class="history-item-date">${entry.size} · ${entry.date}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Auth Integration
-        function initGoogleAuth() {
-            window.google.accounts.id.initialize({
-                client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your client ID
-                callback: handleGoogleSignIn
-            });
-            window.google.accounts.id.renderButton(
-                document.getElementById('authBtn'),
-                { theme: 'outline', size: 'large', type: 'standard' }
-            );
+        // =====================================================
+        // THEME SYSTEM
+        // =====================================================
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('colorTheme') || 'indigo';
+            const savedMode = localStorage.getItem('themeMode') || 'dark';
+            isDark = savedMode === 'dark';
+            document.body.dataset.theme = isDark ? 'dark' : 'light';
+            document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            applyColorTheme(savedTheme, false);
         }
 
-        function handleGoogleSignIn(response) {
-            user = JSON.parse(atob(response.credential.split('.')[1]));
-            document.getElementById('authBtn').textContent = `Hi, ${user.name}`;
-            updateHistory();
+        function toggleTheme() {
+            isDark = !isDark;
+            document.body.dataset.theme = isDark ? 'dark' : 'light';
+            document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            localStorage.setItem('themeMode', isDark ? 'dark' : 'light');
         }
 
-        function toggleAuth() {
-            document.getElementById('authOverlay').classList.toggle('active');
-        }
+        function applyColorTheme(name, save = true) {
+            if (!themes[name]) return;
+            currentThemeName = name;
+            const t = themes[name];
+            document.documentElement.style.setProperty('--accent-primary', t.primary);
+            document.documentElement.style.setProperty('--accent-secondary', t.secondary);
+            document.documentElement.style.setProperty('--accent-glow', t.primary + '66');
+            document.documentElement.style.setProperty('--accent-glow-strong', t.primary + '99');
+            document.documentElement.style.setProperty('--border-primary', t.primary + '20');
+            document.documentElement.style.setProperty('--shadow-glow', `0 0 40px ${t.primary}26`);
+            document.documentElement.style.setProperty('--shadow-glow-strong', `0 0 60px ${t.primary}40`);
+            document.getElementById('currentThemeName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
 
-        function emailLogin() {
-            const email = prompt('Enter email:');
-            if (email) {
-                user = { email };
-                document.getElementById('authBtn').innerHTML = `${user.email}<i class="fas fa-sign-out-alt" onclick="signOut()"></i>`;
+            if (save) localStorage.setItem('colorTheme', name);
+
+            // Re-render waveform if audio loaded
+            if (currentFile) {
+                generateWaveform(currentFile);
             }
+
+            renderThemeGrid();
         }
 
-        function signOut() {
-            user = null;
-            document.getElementById('authBtn').textContent = 'Sign In';
+        function toggleThemeOverlay() {
+            const overlay = document.getElementById('themeOverlay');
+            overlay.classList.toggle('active');
+            if (overlay.classList.contains('active')) renderThemeGrid();
         }
 
-        // Utility Functions
+        function renderThemeGrid() {
+            const container = document.getElementById('themeGrid');
+            container.innerHTML = Object.entries(themes).map(([name, colors]) => `
+                <div class="theme-option ${name === currentThemeName ? 'active' : ''}" onclick="applyColorTheme('${name}')">
+                    <div class="theme-swatch" style="background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});"></div>
+                    <div class="theme-option-name">${name}</div>
+                </div>
+            `).join('');
+        }
+
+        // =====================================================
+        // RESET
+        // =====================================================
+        function resetApp() {
+            stopPlayback();
+            currentFile = null;
+
+            if (videoElement) {
+                videoElement.pause();
+                videoElement.removeAttribute('src');
+                videoElement.load();
+            }
+
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadZone').classList.remove('hidden');
+            document.getElementById('fileInfoSection').classList.add('hidden');
+            document.getElementById('progressSection').classList.add('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('convertBtn').disabled = true;
+
+            document.querySelectorAll('.quick-action').forEach(q => q.classList.remove('active'));
+        }
+
+        // =====================================================
+        // TOAST NOTIFICATIONS
+        // =====================================================
+        function showToast(type, title, message) {
+            const container = document.getElementById('toastContainer');
+            const iconMap = {
+                success: 'fa-check',
+                error: 'fa-xmark',
+                info: 'fa-info'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="fas ${iconMap[type] || 'fa-info'}"></i></div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // =====================================================
+        // UTILITIES
+        // =====================================================
         function formatTime(seconds) {
+            if (!seconds || !isFinite(seconds)) return '0:00';
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes || bytes === 0) return '0 B';
             const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const sizes = ['B', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
-
-        function resetApp() {
-            document.getElementById('fileInfo').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('convertBtn').disabled = true;
-            currentFile = null;
-            if (audioContext) audioContext.close();
-        }
-
-        // Keyboard Shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                togglePlayback();
-            } else if (e.code === 'Enter' && !document.getElementById('convertBtn').disabled) {
-                startConversion();
-            }
-        });
-
-        // Initialize on load
-        window.addEventListener('load', init);
     </script>
 </body>
 </html>
